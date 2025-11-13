@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đăng Ký</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to right, #00c6ff, #0072ff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      width: 360px;
+      height: 660px;
+      padding: 60px 30px;
+      text-align: center;
+    }
+
+    .logo {
+      font-size: 20px;
+    }
+
+    h2 {
+      margin: 10px 0 5px;
+      color: #00bfff;
+    }
+
+    p {
+      font-size: 20px;
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    form {
+      text-align: left;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 5px;
+      color: #333;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+      font-size: 14px;
+    }
+
+    .checkbox {
+      font-size: 13px;
+      color: #555;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-bottom: 15px;
+    }
+
+    .checkbox a {
+      color: #00bfff;
+      text-decoration: none;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 10px;
+      background-color: #00bfff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 15px;
+      margin-bottom: 15px;
+    }
+
+    .btn:hover {
+      background-color: #0099cc;
+    }
+
+    .signup-link {
+      font-size: 13px;
+      color: #666;
+      text-align: center;
+    }
+
+    .signup-link a {
+      color: #00bfff;
+      text-decoration: none;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo"><img src="assets/logo_habitu.png" width=" 120px" height="120px" alt="Habitu Logo" class="logo-img"></div>
+    <h2>Đăng Ký</h2>
+    <p>Bắt đầu hành trình xây dựng thói quen lành mạnh! 🌼</p>
+
+    <form>
+      <label>Tên hiển thị</label>
+      <input type="text" placeholder="Nhập tên của bạn" required>
+
+      <label>Email</label>
+      <input type="email" placeholder="your@email.com" required>
+
+      <label>Mật khẩu</label>
+      <input type="password" placeholder="Ít nhất 6 ký tự" required>
+
+      <label>Xác nhận mật khẩu</label>
+      <input type="password" placeholder="Nhập lại mật khẩu" required>
+
+      <label class="checkbox">
+        <input type="checkbox" required>
+        Tôi đồng ý với <a href="#">Điều khoản sử dụng</a> và <a href="#">Chính sách bảo mật</a>
+      </label>
+
+      <button type="submit" class="btn">Tạo Tài Khoản</button>
+    </form>
+
+    <p class="signup-link">Đã có tài khoản? <a href="dangnhap.html">Đăng nhập</a></p>
+  </div>
+</body>
+</html>

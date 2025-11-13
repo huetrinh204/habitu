@@ -64,7 +64,7 @@ function updateStep() {
   if (currentStep === totalSteps - 1) {
   nextBtn.textContent = "Bắt đầu";
   nextBtn.onclick = () => {
-    window.location.href = "dashboard.html"; // 👉 chuyển sang trang chính
+    window.location.href = "dangnhap.html"; // 👉 chuyển sang trang đăng nhập
   };
 }
    else {
