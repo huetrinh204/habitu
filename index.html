@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HABITU - Hướng Dẫn</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-teal-500 flex items-center justify-center min-h-screen">
+
+  <!-- Overlay mờ nền -->
+  <div class="fixed inset-0 bg-black/40 flex items-center justify-center z-10">
+    <!-- Popup -->
+    <div class="bg-white rounded-2xl w-[90%] max-w-md shadow-lg p-6 relative">
+      <!-- Nút đóng -->
+      <button id="closeBtn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl">✕</button>
+
+      <!-- Thanh tiến trình -->
+      <div class="mb-4">
+        <div class="flex justify-between text-sm text-gray-500 mb-1">
+          <span id="stepLabel">Bước 1 / 7</span>
+        </div>
+        <div class="h-1.5 bg-gray-200 rounded-full">
+          <div id="progressBar" class="h-1.5 bg-teal-400 rounded-full w-1/6 transition-all duration-300"></div>
+        </div>
+      </div>
+
+      <!-- Nội dung hướng dẫn -->
+      <div id="guideContent" class="text-center space-y-4 py-6">
+        <img id="guideIcon" src="./assets/images/party.png" class="mx-auto w-20 h-20 rounded-full" alt="icon">
+        <h2 id="guideTitle" class="text-xl font-semibold text-gray-800">Chào mừng đến với Mèo Thói Quen! 🐱</h2>
+        <p id="guideText" class="text-gray-600">
+          Ứng dụng giúp bạn xây dựng và duy trì các thói quen lành mạnh một cách dễ dàng và vui vẻ.
+        </p>
+      </div>
+
+      <!-- Nút điều hướng -->
+      <div class="flex justify-between items-center mt-4">
+        <button id="prevBtn" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-100">
+          ← Quay Lại
+        </button>
+        <button id="nextBtn" class="px-6 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600">
+          Tiếp Theo →
+        </button>
+      </div>
+
+      <!-- Dấu chấm chỉ bước -->
+      <div class="flex justify-center mt-4 space-x-2">
+        <div class="dot w-2.5 h-2.5 rounded-full bg-teal-400"></div>
+        <div class="dot w-2.5 h-2.5 rounded-full bg-gray-300"></div>
+        <div class="dot w-2.5 h-2.5 rounded-full bg-gray-300"></div>
+        <div class="dot w-2.5 h-2.5 rounded-full bg-gray-300"></div>
+        <div class="dot w-2.5 h-2.5 rounded-full bg-gray-300"></div>
+        <div class="dot w-2.5 h-2.5 rounded-full bg-gray-300"></div>
+        <div class="dot w-2.5 h-2.5 rounded-full bg-gray-300"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="./assets/js/onboarding.js"></script>
+</body>
+</html>
