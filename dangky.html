@@ -6,26 +6,34 @@
   <title>Đăng Ký</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+html, body {
+  scroll-behavior: smooth;
+}
+body {
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(to right, #00c6ff, #0072ff);
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+.header {
+  text-align: center;
+  margin-bottom: 20px; /* tạo khoảng cách với form */
+}
 
-    body {
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(to right, #00c6ff, #0072ff);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-    }
-
-    .container {
-      background: #fff;
-      border-radius: 10px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-      width: 360px;
-      height: 660px;
-      padding: 60px 30px;
-      text-align: center;
-    }
+.header img {
+  display: block;
+  margin: 0 auto 10px; /* căn giữa logo và tạo khoảng cách dưới */
+}
+.container {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  width: 360px;
+  max-width: 90%;
+  padding: 40px 30px;
+  margin: 40px auto; /* can scroll if content is long */
+}
 
     .logo {
       font-size: 20px;
@@ -110,31 +118,45 @@
 </head>
 <body>
   <div class="container">
-    <div class="logo"><img src="assets/logo_habitu.png" width=" 120px" height="120px" alt="Habitu Logo" class="logo-img"></div>
-    <h2>Đăng Ký</h2>
-    <p>Bắt đầu hành trình xây dựng thói quen lành mạnh! 🌼</p>
+    <div class="logo"><img src="assets/logo_habitu.png" width="120" height="120" alt="Habitu Logo" class="logo-img" style="display:block; margin:0 auto;">
+    
+       <div class="header">
+  <h2>Đăng Ký</h2>
+  <p>Bắt đầu hành trình xây dựng thói quen lành mạnh! 🌼</p>
+</div>
 
     <form>
-      <label>Tên hiển thị</label>
-      <input type="text" placeholder="Nhập tên của bạn" required>
+  <label for="username">Tên đăng nhập</label>
+  <input id="username" type="text" name="username" placeholder="Nhập tên của bạn" required>
 
-      <label>Email</label>
-      <input type="email" placeholder="your@email.com" required>
+  <label for="email">Email</label>
+  <input id="email" type="email" name="email" placeholder="your@email.com" required>
 
-      <label>Mật khẩu</label>
-      <input type="password" placeholder="Ít nhất 6 ký tự" required>
+  <label for="password">Mật khẩu</label>
+  <input id="password" type="password" name="password" placeholder="Ít nhất 6 ký tự" required>
 
-      <label>Xác nhận mật khẩu</label>
-      <input type="password" placeholder="Nhập lại mật khẩu" required>
+  <label for="confirm_password">Xác nhận mật khẩu</label>
+  <input id="confirm_password" type="password" name="confirm_password" placeholder="Nhập lại mật khẩu" required>
 
-      <label class="checkbox">
-        <input type="checkbox" required>
-        Tôi đồng ý với <a href="#">Điều khoản sử dụng</a> và <a href="#">Chính sách bảo mật</a>
-      </label>
+ <label>Giới tính</label>
+<div style="display: flex; gap: 20px; align-items: center; margin-bottom: 16px;">
+  <label><input type="radio" name="gender" value="Nam" required> Nam</label>
+  <label><input type="radio" name="gender" value="Nữ" required> Nữ</label>
+  <label><input type="radio" name="gender" value="Khác" required> Khác</label>
+</div>
 
-      <button type="submit" class="btn">Tạo Tài Khoản</button>
-    </form>
+<label for="tel">Số điện thoại</label>
+<input id="tel" type="tel" name="tel" pattern="[0-9]{10}" placeholder="0123456789" required
+       style="width:100%; padding:8px 12px; border:1.5px solid #ccc; border-radius:6px; font-size:1rem; box-sizing:border-box; margin-bottom: 16px;" />
 
+
+  <label class="checkbox">
+    <input type="checkbox" name="agree" required>
+    Tôi đồng ý với <a href="#">Điều khoản sử dụng</a> và <a href="#">Chính sách bảo mật</a>
+  </label>
+
+  <button type="submit" class="btn">Tạo Tài Khoản</button>
+</form>
     <p class="signup-link">Đã có tài khoản? <a href="dangnhap.html">Đăng nhập</a></p>
   </div>
 </body>

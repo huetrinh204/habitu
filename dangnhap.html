@@ -7,28 +7,36 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
 
-    body {
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(to right, #00c6ff, #0072ff);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-    }
+body {
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(to right, #00c6ff, #0072ff);
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
 
-    .container {
-      background: #fff;
-      border-radius: 10px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-      width: 360px;
-      padding: 40px 30px;
-      text-align: center;
-    }
+.container {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  width: 360px;
+  max-width: 90%;
+  padding: 40px 30px;
+  margin: 40px auto; /* căn giữa ngang và có khoảng cách trên/dưới */
+  text-align: center;
+}
 
-    .logo {
-      font-size: 40px;
-    }
+/* Căn giữa logo, h2 và p */
+.container .logo,
+.container h2,
+.container > p:first-of-type {
+  text-align: center;
+}
+
+.container .logo img {
+  display: block;
+  margin: 0 auto 10px; /* căn giữa logo và tạo khoảng cách dưới */
+}
 
     h2 {
       margin: 10px 0 5px;
