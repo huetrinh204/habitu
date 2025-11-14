@@ -24,6 +24,7 @@
     a {
       text-decoration: none;
       color: inherit;
+      font-weight: bold;
     }
 
     /* Navbar */
@@ -175,33 +176,35 @@
     }
 
     .feature-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 30px;
-    }
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 cột cố định */
+    grid-template-rows: repeat(2, auto);   /* 2 hàng */
+    gap: 30px;
+}
 
-    .feature {
-      background-color: rgba(255, 255, 255, 0.15);
-      padding: 30px;
-      border-radius: 20px;
-      transition: transform 0.3s;
-    }
+   .feature {
+    background-color: #fff; /* nền trắng */
+    color: #24a2b3; /* chữ đen */
+    padding: 30px;
+    border-radius: 20px;
+    transition: transform 0.3s, box-shadow 0.3s;
+    text-align: center;
+}
 
-    .feature:hover {
-      transform: translateY(-10px);
-      background-color: rgba(255, 255, 255, 0.25);
-    }
+.feature:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2); /* thêm bóng khi hover */
+}
 
-    .feature h3 {
-      font-size: 22px;
-      margin-bottom: 15px;
-    }
+.feature h3 {
+    font-size: 22px;
+    margin-bottom: 15px;
+}
 
-    .feature p {
-      font-size: 16px;
-      line-height: 1.4;
-    }
-
+.feature p {
+    font-size: 16px;
+    line-height: 1.4;
+}
     /* How It Works Section */
     .how-it-works {
       padding: 100px 50px;
@@ -268,6 +271,11 @@
         align-items: center;
       }
     }
+    @media(max-width: 768px){
+    .feature-grid {
+        grid-template-columns: 1fr; /* 1 cột cho mobile */
+    }
+}
 
   </style>
 </head>
@@ -280,10 +288,10 @@
       Habitu
     </div>
     <div class="menu">
-      <a href="#features">Tính Năng</a>
-      <a href="#how">Cách Hoạt Động</a>
-      <a href="#community">Cộng đồng</a>
-      <a href="#about">Về chúng tôi</a>
+      <a href="#features">TÍNH NĂNG</a>
+      <a href="#how">CÁCH HOẠT ĐỘNG</a>
+      <a href="#community">CỘNG ĐỒNG</a>
+      <a href="#about">VỀ CHÚNG TÔI</a>
     </div>
     <div class="auth-buttons">
       <button class="login">Đăng nhập</button>
