@@ -1,6 +1,5 @@
-# 🐱 Habitu - Ứng dụng Web Dễ Thương Hỗ Trợ Duy Trì Thói Quen Lành Mạnh
+# 🐱 Habitu -Website Hỗ Trợ Duy Trì Thói Quen Lành Mạnh ![Habitu Banner](./assets/images/welcome.png)
 
-![Habitu Banner](./assets/images/welcome.png)
 
 Chào mừng đến với **Habitu**! 🐾  
 Habitu là một **ứng dụng web cute và trực quan**, giúp bạn **xây dựng, theo dõi và duy trì thói quen lành mạnh mỗi ngày**. Hãy biến từng bước nhỏ hôm nay thành hành trình lớn ngày mai! 🌱✨
