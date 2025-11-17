@@ -45,6 +45,7 @@ Habitu là một **ứng dụng web cute và trực quan**, giúp bạn **xây d
 ## 🏠 Cấu trúc dự án
 
 habitu/
+
 ├─ assets/   # chứa các tài nguyên tĩnh
 
 │  ├─ css/      # File CSS cho style của trang
