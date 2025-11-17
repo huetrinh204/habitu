@@ -82,14 +82,14 @@ Tạo database: import file database.sql hoặc tự tạo bảng users, habits,
 
 Cấu hình database: chỉnh DB_HOST, DB_NAME, DB_USER, DB_PASS trong config.php.
 
-# **🚀 Giao diện trải nghiệm**
+## 🚀 Giao diện trải nghiệm
 💖 Dễ thương & thân thiện: Icon cute, màu sắc tươi sáng, font chữ dễ đọc.
 
 🐱 Trực quan: Pop-up onboarding, hover animation, badge & progress bar.
 
 🌟 Responsive: Tương thích desktop & mobile.
 
-## **💡 Tương lai & ý tưởng mở rộng**
+## 💡 Tương lai & ý tưởng mở rộng
 🤖 Chatbot tư vấn thói quen cá nhân
 
 📩 Thông báo nhắc nhở hằng ngày
