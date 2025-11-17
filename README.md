@@ -57,7 +57,6 @@ habitu/
 ├─ logout.php
 ├─ config.php
 └─ README.md
----
 
 ## 🚀 Hướng dẫn cài đặt
 
