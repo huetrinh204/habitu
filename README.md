@@ -82,15 +82,14 @@ Tạo database: import file database.sql hoặc tự tạo bảng users, habits,
 
 Cấu hình database: chỉnh DB_HOST, DB_NAME, DB_USER, DB_PASS trong config.php.
 
-**## 🎨 Giao diện & Trải nghiệm**
+# **🚀 Giao diện trải nghiệm**
 💖 Dễ thương & thân thiện: Icon cute, màu sắc tươi sáng, font chữ dễ đọc.
 
 🐱 Trực quan: Pop-up onboarding, hover animation, badge & progress bar.
 
 🌟 Responsive: Tương thích desktop & mobile.
 
-
-##**💡 Tương lai & ý tưởng mở rộng**
+## **💡 Tương lai & ý tưởng mở rộng**
 🤖 Chatbot tư vấn thói quen cá nhân
 
 📩 Thông báo nhắc nhở hằng ngày
@@ -99,14 +98,17 @@ Cấu hình database: chỉnh DB_HOST, DB_NAME, DB_USER, DB_PASS trong config.ph
 
 📊 Biểu đồ nâng cao & phân tích AI
 
-##**🐾 Liên hệ & Hỗ trợ**
+## **🐾 Liên hệ & Hỗ trợ**
 GitHub: https://github.com/username
 
 Email: yourname@example.com
 
 “Một thói quen nhỏ hôm nay, một cuộc sống lành mạnh ngày mai!” 🌱💛
 
+## **🎀 Gif trải nghiệm (ví dụ)**
+Onboarding steps cute & trực quan khi người dùng mới đăng nhập.
 
+✨ Habitu - Dễ thương, trực quan, và luôn bên bạn để tạo nên thói quen lành mạnh! 🐾
 ##**🎀 Gif trải nghiệm (ví dụ)**
 
 Onboarding steps cute & trực quan khi người dùng mới đăng nhập.
