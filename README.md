@@ -1,4 +1,4 @@
-# 🐱 Habitu -Website Hỗ Trợ Duy Trì Thói Quen Lành Mạnh ![Habitu Banner](./assets/images/welcome.png)
+## 🐱 Habitu-Website Hỗ Trợ Duy Trì Thói Quen Lành Mạnh ![Habitu Banner](./assets/images/welcome.png)
 
 
 Chào mừng đến với **Habitu**! 🐾  
