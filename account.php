@@ -1,56 +1,21 @@
+<?php
+session_start();
+
+// Nếu chưa đăng nhập → chuyển về trang đăng nhập
+if (!isset($_SESSION["user_id"])) {
+    header("Location: dangnhap.php");
+    exit();
+}
+
+// Lấy username từ session
+$username = $_SESSION["username"];
+?>
+
 <!DOCTYPE html>
 <html lang="vi">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tài Khoản | Habitu 🐱</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-</head>
-
 <body class="bg-gradient-to-br from-cyan-300 via-teal-300 to-teal-500 min-h-screen">
 
-<!-- NAV -->
-<nav class="flex justify-between px-8 py-3 items-center bg-gradient-to-r from-purple-600 to-pink-500 text-white shadow-lg">
-    <div class="flex items-center gap-3">
-        <img style="border-radius: 60%;" src="assets/logo_habitu.png" width="38" alt="Habitu Logo">
-        <h2 class="text-xl font-bold">Habitu</h2>
-    </div>
-
-    <ul class="flex gap-8 font-medium">
-        <li class="flex items-center gap-1">
-            <i class="fas fa-home"></i>
-            <a href="dashboard.php" class="hover:text-yellow-300 transition">Trang Chủ</a>
-        </li>
-        <li class="flex items-center gap-1">
-            <i class="fas fa-book"></i>
-            <a href="journal.html" class="hover:text-yellow-300 transition">Nhật Ký</a>
-        </li>
-        <li class="flex items-center gap-1">
-            <i class="fas fa-users"></i>
-            <a href="community.html" class="hover:text-yellow-300 transition">Cộng Đồng</a>
-        </li>
-        <li class="flex items-center gap-1">
-            <i class="fas fa-chart-bar"></i>
-            <a href="thongke.html" class="hover:text-yellow-300 transition">Thống Kê</a>
-        </li>
-        <li class="flex items-center gap-1">
-            <i class="fas fa-user"></i>
-            <a href="account.html" class="text-yellow-300 underline underline-offset-4">Tài Khoản</a>
-        </li>
-        <li class="flex items-center gap-1">
-            <i class="fas fa-question-circle"></i>
-            <a href="support.html" class="hover:text-yellow-300 transition">Hỗ Trợ</a>
-        </li>
-    </ul>
-
-    <div class="flex items-center gap-2">
-        <i class="fas fa-user-circle text-xl"></i>
-        <span>Người dùng</span>
-    </div>
-</nav>
-
+<?php include "navbar.php"; ?>
 
 
 <!-- PAGE TITLE -->
