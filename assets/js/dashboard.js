@@ -69,3 +69,24 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 
+const checkboxes = document.querySelectorAll('.habit-checkbox');
+
+checkboxes.forEach(cb => {
+    cb.addEventListener('change', function() {
+        const habitId = this.dataset.habitId;
+        const completed = this.checked ? 1 : 0;
+
+        // Gửi AJAX để update completed_today và streak trong DB
+        fetch('update_habit_status.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({habit_id: habitId, completed_today: completed})
+        })
+        .then(res => res.json())
+        .then(data => {
+            // Cập nhật giao diện
+            document.querySelector('.stat-box-hoanthanh').textContent = `${data.completed_today}/${data.total} (${data.percent}%)`;
+            document.querySelector('.stat-box-streak').textContent = `${data.total_streak} ngày`;
+        });
+    });
+});

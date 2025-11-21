@@ -1,5 +1,7 @@
+
 <?php
 session_start();
+include "config.php";
 
 // Nếu chưa đăng nhập → chuyển về trang đăng nhập
 if (!isset($_SESSION["user_id"])) {
@@ -9,6 +11,15 @@ if (!isset($_SESSION["user_id"])) {
 
 // Lấy username từ session
 $username = $_SESSION["username"];
+$user_id = $_SESSION['user_id'];
+
+$stmt = $pdo->prepare("
+    SELECT * FROM habit 
+    WHERE status='Mẫu' OR (status='Người dùng' AND user_id=:user_id) 
+    ORDER BY created_hb DESC
+");
+$stmt->execute(['user_id' => $user_id]);
+$habits = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -63,9 +74,32 @@ $username = $_SESSION["username"];
     </button>
   </div>
 
-  <div id="habitList" class="habit-list">
-    <!-- render habits -->
-  </div>
+ <div id="habitList" class="habit-list">
+<?php foreach ($habits as $hb): ?>
+    <div class="habit-item bg-white p-4 rounded-xl shadow-md mb-3 flex items-center gap-3">
+
+        <!-- Checkbox hoàn thành -->
+        <input type="checkbox" class="habit-checkbox" 
+            data-habit-id="<?= $hb['habit_id'] ?>"
+          
+
+        <!-- Icon -->
+        <div class="text-3xl"><?= htmlspecialchars($hb['icon']) ?></div>
+
+        <!-- Tên + miêu tả -->
+        <div>
+            <h4 class="font-semibold text-gray-800"><?= htmlspecialchars($hb['habit_name']) ?></h4>
+            <p class="text-gray-500 text-sm"><?= htmlspecialchars($hb['description']) ?></p>
+        </div>
+
+        <!-- Chuỗi streak -->
+        <div class="streak text-orange-400 font-semibold ml-auto">
+            <?= $hb['current_streak'] ?> ngày
+        </div>
+
+    </div>
+<?php endforeach; ?>
+</div>
 </section>
 
 <!-- POPUP THÊM THÓI QUEN -->
