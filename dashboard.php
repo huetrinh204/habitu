@@ -14,7 +14,9 @@ $username = $_SESSION["username"];
 <!DOCTYPE html>
 <html lang="vi">
 
+
 <body class="bg-gradient-to-br from-cyan-300 to-teal-400 min-h-screen">
+
 
 <!-- NAV -->
 <?php include "navbar.php"; ?>
@@ -65,6 +67,58 @@ $username = $_SESSION["username"];
     <!-- render habits -->
   </div>
 </section>
+
+<!-- POPUP THÊM THÓI QUEN -->
+<div id="addHabitPopup" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center hidden transition-opacity duration-200">
+  <div class="bg-white rounded-2xl shadow-2xl p-6 w-96 relative animate-fadeIn">
+
+    <!-- Nút X -->
+    <button id="closePopup"
+            class="absolute top-3 right-3 text-gray-500 hover:text-red-500 text-xl">
+      ✕
+    </button>
+
+    <h2 class="text-2xl font-bold mb-4 text-center text-purple-700">
+      Thêm Thói Quen Mới ✨
+    </h2>
+
+    <form id="addHabitForm" class="space-y-4">
+
+      <div>
+        <label class="block text-gray-700 font-medium mb-1">Tên thói quen</label>
+        <input type="text" name="habit_name" required
+               class="w-full border px-3 py-2 rounded-lg focus:ring-2 focus:ring-purple-400 focus:outline-none">
+      </div>
+
+      <div>
+        <label class="block text-gray-700 font-medium mb-1">Mô tả</label>
+        <textarea name="description"
+                  class="w-full border px-3 py-2 rounded-lg focus:ring-2 focus:ring-purple-400 focus:outline-none"></textarea>
+      </div>
+
+      <div>
+        <label class="block text-gray-700 font-medium mb-1">Icon</label>
+        <input type="text" name="icon" placeholder="Ví dụ: 🌞 hoặc drink.png"
+               class="w-full border px-3 py-2 rounded-lg focus:ring-2 focus:ring-purple-400 focus:outline-none">
+      </div>
+
+      <!-- NÚT LƯU THÓI QUEN -->
+      <button type="submit"
+              class="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-xl text-lg font-semibold shadow-md transition">
+        💾 Lưu Thói Quen
+      </button>
+
+    </form>
+  </div>
+</div>
+
+<style>
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+.animate-fadeIn { animation: fadeIn 0.25s ease-out; }
+</style>
 
 <script src="./assets/js/dashboard.js"></script>
 </body>

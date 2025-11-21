@@ -40,3 +40,32 @@ async function updateStats() {
 }
 
 loadHabits();
+
+document.getElementById("addHabitBtn").onclick = () => {
+    document.getElementById("addHabitPopup").classList.remove("hidden");
+};
+
+document.getElementById("closePopup").onclick = () => {
+    document.getElementById("addHabitPopup").classList.add("hidden");
+};
+
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const popup = document.getElementById("addHabitPopup");
+    const openBtn = document.getElementById("addHabitBtn");
+    const closeBtn = document.getElementById("closePopup");
+
+    // mở popup
+    openBtn.onclick = () => popup.classList.remove("hidden");
+
+    // đóng popup khi bấm nút X
+    closeBtn.onclick = () => popup.classList.add("hidden");
+
+    // bấm ra ngoài để đóng
+    popup.onclick = (e) => {
+        if (e.target === popup) popup.classList.add("hidden");
+    };
+
+});
+
