@@ -56,6 +56,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['habit_id'])){
 <!-- NAV -->
 <?php include "navbar.php"; ?>
 
+<!-- Tổng quan -->
 <div class="px-10 py-5">
     <h1 class="text-3xl font-bold" style="color:#ffffff; text-shadow:2px 2px 6px rgba(0,0,0,0.5)">Quản Lý Thói Quen</h1>
     <p class="text-gray-700 mb-6">Quản lý thói quen của người dùng và tạo thói quen mẫu</p>
@@ -93,7 +94,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['habit_id'])){
 
     <!-- Nút Tạo Thói Quen Mẫu -->
 <button id="createHabitBtn" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded ml-auto">
-    Tạo Thói Quen Mẫu
+    + Tạo Thói Quen Mẫu
 </button>
     </div>
 
@@ -295,7 +296,7 @@ document.addEventListener('click', function(e){
         <thead>
             <tr class="border-b text-gray-700 font-bold">
                 <th>Thói quen</th>
-                <th>Trạng thái</th>
+                <th>Mô tả</th>
                 <th>Người tạo</th>
                 <th>Người dùng</th>
                 <th>Hoàn thành</th>
@@ -313,7 +314,7 @@ document.addEventListener('click', function(e){
         {$row['habit_name']}
       </td>";
 
-echo "<td>{$row['status']}</td>";
+echo "<td>{$row['description']}</td>";
 echo "<td>";
 if ($row['user_id'] == 17) {
     echo "System";
