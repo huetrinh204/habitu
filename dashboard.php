@@ -76,11 +76,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_user_habit']))
     exit;
 }
 
+/*==================== 4. Chuỗi thói quen ================ */
+
+$today = date('Y-m-d');
+
+// Lấy tất cả thói quen mẫu + thói quen người dùng
+$stmt = $pdo->prepare("
+    SELECT * FROM habit 
+    WHERE status='Mẫu' OR (status='Người dùng' AND user_id=:user_id)
+    ORDER BY created_hb DESC
+");
+$stmt->execute(['user_id' => $user_id]);
+$habits = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Tổng thói quen
+$total_habits = count($habits);
+
+// Lấy completed hôm nay của user
+$stmt = $pdo->prepare("
+    SELECT habit_id, completed FROM habit_logs
+    WHERE user_id=? AND log_date=?
+");
+$stmt->execute([$user_id, $today]);
+$habit_logs = $stmt->fetchAll(PDO::FETCH_KEY_PAIR); // habit_id => completed
+
+$completed_today = count(array_filter($habit_logs, fn($c)=>$c=='done'));
+
 ?>
 
 <!DOCTYPE html>
 <html lang="vi">
-
 
 <body class="bg-gradient-to-br from-cyan-300 to-teal-400 min-h-screen">
 
@@ -97,29 +122,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_user_habit']))
 <!-- Stats -->
 <section class="stats container mx-auto grid grid-cols-3 gap-6 px-6">
   <div class="stat-box bg-white shadow-md p-5 rounded-lg flex items-center gap-4">
-    <img style="border-radius: 60%; width: 50px; height : 50px;" src="assets/icons/sun.png" class="w-10" alt="icon">
+    <img style="border-radius:60%;width:50px;height:50px;" src="assets/icons/sun.png" alt="icon">
     <div>
       <h3 class="font-semibold">Tổng thói quen</h3>
-      <p class="text-lg font-bold">3</p>
+      <p class="text-lg font-bold"><?= $total_habits ?></p>
     </div>
   </div>
 
   <div class="stat-box bg-white shadow-md p-5 rounded-lg flex items-center gap-4">
-    <img style="border-radius: 60%; width: 50px; height : 50px;" src="assets/icons/check.png" class="w-10" alt="icon">
+    <img style="border-radius:60%;width:50px;height:50px;" src="assets/icons/check.png" alt="icon">
     <div>
       <h3 class="font-semibold">Hoàn thành hôm nay</h3>
-      <p class="text-lg font-bold">1/3 (33%)</p>
+      <p class="text-lg font-bold">
+  <span id="completedToday"><?= $completed_today ?></span>/<?= $total_habits ?> 
+  (<span id="completedPercent"><?= $total_habits ? round($completed_today/$total_habits*100) : 0 ?></span>%)
+</p>
     </div>
   </div>
 
   <div class="stat-box bg-white shadow-md p-5 rounded-lg flex items-center gap-4">
-    <img style="border-radius: 60%; width: 50px; height : 50px;" src="assets/icons/streak.png" class="w-10" alt="icon">
+    <img style="border-radius:60%;width:50px;height:50px;" src="assets/icons/streak.png" alt="icon">
     <div>
       <h3 class="font-semibold">Tổng chuỗi ngày</h3>
       <p class="text-lg font-bold">15 ngày</p>
     </div>
   </div>
 </section>
+
+
 
 <!-- Habits -->
 <section class="habits-section px-6 mt-8">
@@ -135,7 +165,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_user_habit']))
     <div class="habit-item bg-white p-4 rounded-xl shadow-md mb-3 flex items-center gap-3 relative">
 
         <!-- Checkbox -->
-        <input type="checkbox" class="habit-checkbox" data-habit-id="<?= $hb['habit_id'] ?>">
+        <input type="checkbox" class="habit-checkbox" 
+           data-habit-id="<?= $hb['habit_id'] ?>"
+           <?= isset($habit_logs[$hb['habit_id']]) && $habit_logs[$hb['habit_id']] === 'done' ? 'checked' : '' ?>>
 
         <!-- Icon -->
         <div class="text-3xl"><?= htmlspecialchars($hb['icon']) ?></div>
@@ -419,6 +451,53 @@ document.addEventListener('click', function(e){
         iconGrid.classList.add('hidden');
     }
 });
+
+
+// Hàm mở popup Sửa thói quen
+function openEditHabit(habitId, habitName, description, icon) {
+    // Đổ dữ liệu vào form
+    document.getElementById("edit_habit_id").value = habitId;
+    document.getElementById("edit_habit_name").value = habitName;
+    document.getElementById("edit_description").value = description;
+    document.getElementById("edit_icon").value = icon;
+
+    // Hiển thị popup
+    document.getElementById("editHabitModal").classList.remove("hidden");
+}
+
+// Hàm đóng popup
+function closeEditModal() {
+    document.getElementById("editHabitModal").classList.add("hidden");
+}
+
+// Xử lí check thói quen đã hoàn thành -> cập nhật trong bảng habit_logs
+document.querySelectorAll('.habit-checkbox').forEach(cb => {
+    cb.addEventListener('change', function() {
+        const habitId = this.dataset.habitId;
+        const completed = this.checked ? 'done' : 'missed'; // ENUM
+
+        fetch('update_habit_log.php', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({habitId, completed})
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.success){
+                const completedEl = document.getElementById('completedToday');
+                const percentEl = document.getElementById('completedPercent');
+                let current = parseInt(completedEl.textContent);
+                const total = <?= $total_habits ?>;
+
+                current = this.checked ? current + 1 : Math.max(0, current - 1);
+                completedEl.textContent = current;
+                percentEl.textContent = total ? Math.round(current / total * 100) : 0;
+            }
+        });
+    });
+});
+  
+
 </script>
 
 <script src="./assets/js/dashboard.js"></script>
