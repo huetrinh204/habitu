@@ -79,8 +79,8 @@ $sampleHabits = $stmtSample->fetch(PDO::FETCH_ASSOC)['sample_habits'];
 $stmtUsers = $pdo->query("SELECT COUNT(*) AS total_users FROM users");
 $totalUsers = $stmtUsers->fetch(PDO::FETCH_ASSOC)['total_users'];
 
-// Tổng hoàn thành (giả sử có bảng track hoàn thành habit)
-// Nếu em chưa có bảng track, tạm thời set 0
+
+
 //$stmtCompleted = $pdo->query("SELECT COUNT(*) AS total_completed FROM habit_completed");
 //$totalCompleted = $stmtCompleted->fetch(PDO::FETCH_ASSOC)['total_completed'] ?? 0;
 ?>

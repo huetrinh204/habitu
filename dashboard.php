@@ -1,18 +1,23 @@
 
 <?php
-session_start();
+// ---- KHỞI TẠO SESSION MỘT LẦN DUY NHẤT ----
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 include "config.php";
 
-// Nếu chưa đăng nhập → chuyển về trang đăng nhập
+// Kiểm tra đăng nhập
 if (!isset($_SESSION["user_id"])) {
     header("Location: dangnhap.php");
     exit();
 }
 
-// Lấy username từ session
+// Lấy user_id & username
+$user_id = $_SESSION["user_id"];
 $username = $_SESSION["username"];
-$user_id = $_SESSION['user_id'];
 
+/* ==================== LẤY DANH SÁCH THÓI QUEN ==================== */
 $stmt = $pdo->prepare("
     SELECT * FROM habit 
     WHERE status='Mẫu' OR (status='Người dùng' AND user_id=:user_id) 
@@ -20,6 +25,57 @@ $stmt = $pdo->prepare("
 ");
 $stmt->execute(['user_id' => $user_id]);
 $habits = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
+/* ==================== 1. TẠO THÓI QUEN NGƯỜI DÙNG ==================== */
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_user_habit'])) {
+
+    $name = $_POST['habit_name'];
+    $description = $_POST['description'];
+    $icon = $_POST['icon'];
+
+    $stmt = $pdo->prepare("
+        INSERT INTO habit (habit_name, description, icon, status, created_hb, user_id)
+        VALUES (?, ?, ?, 'Người dùng', NOW(), ?)
+    ");
+
+    $stmt->execute([$name, $description, $icon, $user_id]);
+    header("Location: dashboard.php");
+    exit;
+}
+
+
+/* ==================== 2. XOÁ THÓI QUEN ==================== */
+if (isset($_GET['delete_user_habit'])) {
+    $habit_id = $_GET['delete_user_habit'];
+
+    $stmt = $pdo->prepare("DELETE FROM habit WHERE habit_id=? AND user_id=?");
+    $stmt->execute([$habit_id, $user_id]);
+
+    header("Location: dashboard.php");
+    exit;
+}
+
+/* ==================== 3. CẬP NHẬT THÓI QUEN ==================== */
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_user_habit'])) {
+
+    $habit_id = $_POST['habit_id'];
+    $name     = $_POST['habit_name'];
+    $desc     = $_POST['description'];
+    $icon     = $_POST['icon'];
+
+    $stmt = $pdo->prepare("
+        UPDATE habit 
+        SET habit_name=?, description=?, icon=? 
+        WHERE habit_id=? AND user_id=?
+    ");
+
+    $stmt->execute([$name, $desc, $icon, $habit_id, $user_id]);
+
+    header("Location: dashboard.php");
+    exit;
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -76,25 +132,40 @@ $habits = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
  <div id="habitList" class="habit-list">
 <?php foreach ($habits as $hb): ?>
-    <div class="habit-item bg-white p-4 rounded-xl shadow-md mb-3 flex items-center gap-3">
+    <div class="habit-item bg-white p-4 rounded-xl shadow-md mb-3 flex items-center gap-3 relative">
 
-        <!-- Checkbox hoàn thành -->
-        <input type="checkbox" class="habit-checkbox" 
-            data-habit-id="<?= $hb['habit_id'] ?>"
-          
+        <!-- Checkbox -->
+        <input type="checkbox" class="habit-checkbox" data-habit-id="<?= $hb['habit_id'] ?>">
 
         <!-- Icon -->
         <div class="text-3xl"><?= htmlspecialchars($hb['icon']) ?></div>
 
-        <!-- Tên + miêu tả -->
+        <!-- Tên + mô tả -->
         <div>
             <h4 class="font-semibold text-gray-800"><?= htmlspecialchars($hb['habit_name']) ?></h4>
             <p class="text-gray-500 text-sm"><?= htmlspecialchars($hb['description']) ?></p>
         </div>
 
         <!-- Chuỗi streak -->
-        <div class="streak text-orange-400 font-semibold ml-auto">
+        <div class="streak text-orange-400 font-semibold ml-auto mr-3">
             <?= $hb['current_streak'] ?> ngày
+        </div>
+
+        <!-- Nút sửa / xoá -->
+        <div class="flex gap-2">
+            <!-- Nút sửa -->
+            <button 
+                onclick="openEditHabit('<?= $hb['habit_id'] ?>', '<?= htmlspecialchars($hb['habit_name']) ?>', '<?= htmlspecialchars($hb['description']) ?>', '<?= htmlspecialchars($hb['icon']) ?>')"
+                class="text-blue-600 hover:text-blue-800 font-semibold">
+                ✏️
+            </button>
+
+            <!-- Nút xoá -->
+            <a href="dashboard.php?delete_user_habit=<?= $hb['habit_id'] ?>"
+               onclick="return confirm('Xóa thói quen này?')"
+               class="text-red-600 hover:text-red-800 font-semibold">
+                🗑️
+            </a>
         </div>
 
     </div>
@@ -103,49 +174,133 @@ $habits = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </section>
 
 <!-- POPUP THÊM THÓI QUEN -->
-<div id="addHabitPopup" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center hidden transition-opacity duration-200">
-  <div class="bg-white rounded-2xl shadow-2xl p-6 w-96 relative animate-fadeIn">
+<!-- Popup Form -->
+<div id="createHabitModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+    <div class="bg-white rounded-2xl shadow-2xl w-11/12 md:w-1/2 p-6 relative">
 
-    <!-- Nút X -->
-    <button id="closePopup"
-            class="absolute top-3 right-3 text-gray-500 hover:text-red-500 text-xl">
-      ✕
-    </button>
+        <!-- Header -->
+        <div class="mb-4 p-4 rounded-t-2xl bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold text-xl flex justify-between items-center">
+            Tạo Thói Quen
+            <button id="closeModalBtn" class="text-white text-2xl font-bold hover:text-gray-200">&times;</button>
+        </div>
 
-    <h2 class="text-2xl font-bold mb-4 text-center text-purple-700">
-      Thêm Thói Quen Mới ✨
-    </h2>
+        <form method="POST" class="space-y-4">
+            <!-- Flag để PHP biết là form user -->
+            <input type="hidden" name="create_user_habit" value="1">
 
-    <form id="addHabitForm" class="space-y-4">
+            <!-- Tên thói quen -->
+            <div>
+                <label class="block font-medium mb-1">Tên Thói Quen</label>
+                <input name="habit_name" type="text" 
+                    class="w-full border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-pink-400" 
+                    required>
+            </div>
 
-      <div>
-        <label class="block text-gray-700 font-medium mb-1">Tên thói quen</label>
-        <input type="text" name="habit_name" required
-               class="w-full border px-3 py-2 rounded-lg focus:ring-2 focus:ring-purple-400 focus:outline-none">
-      </div>
+            <!-- Mô tả -->
+            <div>
+                <label class="block font-medium mb-1">Mô tả</label>
+                <textarea name="description"
+                    class="w-full border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-pink-400"
+                    required></textarea>
+            </div>
 
-      <div>
-        <label class="block text-gray-700 font-medium mb-1">Mô tả</label>
-        <textarea name="description"
-                  class="w-full border px-3 py-2 rounded-lg focus:ring-2 focus:ring-purple-400 focus:outline-none"></textarea>
-      </div>
+            <!-- Chọn Icon -->
+            <div class="relative">
+                <label class="block font-medium mb-1">Chọn Icon</label>
 
-      <div>
-        <label class="block text-gray-700 font-medium mb-1">Icon</label>
-        <input type="text" name="icon" placeholder="Ví dụ: 🌞 hoặc drink.png"
-               class="w-full border px-3 py-2 rounded-lg focus:ring-2 focus:ring-purple-400 focus:outline-none">
-      </div>
+                <input id="iconInput" type="text" readonly placeholder="Chọn icon..."
+                       class="w-full border border-gray-300 px-3 py-2 rounded-lg cursor-pointer focus:ring-2 focus:ring-pink-400" required>
 
-      <!-- NÚT LƯU THÓI QUEN -->
-      <button type="submit"
-              class="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-xl text-lg font-semibold shadow-md transition">
-        💾 Lưu Thói Quen
-      </button>
+                <!-- Icon Grid -->
+                <div id="iconGrid"
+                    class="absolute top-full left-0 mt-2 w-full bg-white border border-gray-200 rounded-lg shadow-lg p-2 grid grid-cols-5 gap-2 hidden max-h-48 overflow-y-auto z-50">
 
-    </form>
-  </div>
+                    <!-- 25 icon -->
+                    <div class="cursor-pointer text-2xl text-center p-2 rounded-lg hover:bg-pink-200">💧</div>
+                    <div class="cursor-pointer text-2xl text-center p-2 rounded-lg hover:bg-pink-200">🏃</div>
+                    <div class="cursor-pointer text-2xl text-center p-2 rounded-lg hover:bg-pink-200">📚</div>
+                    <div class="cursor-pointer text-2xl text-center p-2 rounded-lg hover:bg-pink-200">🧘</div>
+                    <div class="cursor-pointer text-2xl text-center p-2 rounded-lg hover:bg-pink-200">😴</div>
+
+                    <div class="cursor-pointer text-2xl text-center p-2 rounded-lg hover:bg-pink-200">🗣️</div>
+                    <div class="cursor-pointer text-2xl text-center p-2 rounded-lg hover:bg-pink-200">💰</div>
+                    <div class="cursor-pointer text-2xl text-center p-2 rounded-lg hover:bg-pink-200">📝</div>
+                    <div class="cursor-pointer text-2xl text-center p-2 rounded-lg hover:bg-pink-200">🎧</div>
+                    <div class="cursor-pointer text-2xl text-center p-2 rounded-lg hover:bg-pink-200">🎨</div>
+
+                    <div class="cursor-pointer text-2xl text-center p-2 rounded-lg hover:bg-pink-200">📖</div>
+                    <div class="cursor-pointer text-2xl text-center p-2 rounded-lg hover:bg-pink-200">⚽</div>
+                    <div class="cursor-pointer text-2xl text-center p-2 rounded-lg hover:bg-pink-200">🏊</div>
+                    <div class="cursor-pointer text-2xl text-center p-2 rounded-lg hover:bg-pink-200">🚴</div>
+                    <div class="cursor-pointer text-2xl text-center p-2 rounded-lg hover:bg-pink-200">🥗</div>
+
+                    <div class="cursor-pointer text-2xl text-center p-2 rounded-lg hover:bg-pink-200">🍎</div>
+                    <div class="cursor-pointer text-2xl text-center p-2 rounded-lg hover:bg-pink-200">🧩</div>
+                    <div class="cursor-pointer text-2xl text-center p-2 rounded-lg hover:bg-pink-200">🖋️</div>
+                    <div class="cursor-pointer text-2xl text-center p-2 rounded-lg hover:bg-pink-200">🎹</div>
+                    <div class="cursor-pointer text-2xl text-center p-2 rounded-lg hover:bg-pink-200">🎬</div>
+
+                    <div class="cursor-pointer text-2xl text-center p-2 rounded-lg hover:bg-pink-200">🎯</div>
+                    <div class="cursor-pointer text-2xl text-center p-2 rounded-lg hover:bg-pink-200">🛌</div>
+                    <div class="cursor-pointer text-2xl text-center p-2 rounded-lg hover:bg-pink-200">📅</div>
+                    <div class="cursor-pointer text-2xl text-center p-2 rounded-lg hover:bg-pink-200">🧹</div>
+                    <div class="cursor-pointer text-2xl text-center p-2 rounded-lg hover:bg-pink-200">💻</div>
+                </div>
+
+                <input type="hidden" name="icon" id="selectedIcon">
+            </div>
+
+            <!-- Buttons -->
+            <div class="flex justify-end gap-2 mt-4">
+                <button type="button" id="closeModalBtn2" class="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300">Hủy</button>
+
+                <button type="submit"
+                    class="px-5 py-2 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold shadow-lg hover:from-purple-600 hover:to-pink-600">
+                    Tạo
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
 
+
+<!-- POPUP SỬA THÓI QUEN -->
+<div id="editHabitModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+    <div class="bg-white rounded-2xl shadow-2xl w-11/12 md:w-1/2 p-6 relative">
+
+        <div class="mb-4 p-4 rounded-t-2xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-bold text-xl flex justify-between items-center">
+            Sửa Thói Quen
+            <button onclick="closeEditModal()" class="text-white text-2xl">&times;</button>
+        </div>
+
+        <form method="POST" class="space-y-4">
+            <input type="hidden" name="update_user_habit" value="1">
+            <input type="hidden" name="habit_id" id="edit_habit_id">
+
+            <div>
+                <label class="block font-medium mb-1">Tên Thói Quen</label>
+                <input id="edit_habit_name" name="habit_name" class="w-full border px-3 py-2 rounded-lg" required>
+            </div>
+
+            <div>
+                <label class="block font-medium mb-1">Mô tả</label>
+                <textarea id="edit_description" name="description"
+                          class="w-full border px-3 py-2 rounded-lg" required></textarea>
+            </div>
+
+            <div>
+                <label class="block font-medium mb-1">Icon</label>
+                <input id="edit_icon" name="icon" class="w-full border px-3 py-2 rounded-lg" required>
+            </div>
+
+            <div class="flex justify-end gap-2 mt-4">
+                <button type="button" onclick="closeEditModal()" class="px-4 py-2 rounded-lg bg-gray-200">Hủy</button>
+                <button type="submit" class="px-5 py-2 rounded-full bg-blue-500 text-white font-semibold">Cập nhật</button>
+            </div>
+        </form>
+
+    </div>
+</div>
 <style>
 @keyframes fadeIn {
   from { opacity: 0; transform: scale(0.95); }
@@ -226,6 +381,45 @@ $habits = $stmt->fetchAll(PDO::FETCH_ASSOC);
   </div>
 
 </footer>
+<script>
+const createBtn = document.getElementById('addHabitBtn');
+const modal = document.getElementById('createHabitModal');
+const closeBtn = document.getElementById('closeModalBtn');
+const closeBtn2 = document.getElementById('closeModalBtn2');
+
+// Mở / đóng modal
+createBtn.addEventListener('click', () => modal.classList.remove('hidden'));
+closeBtn.addEventListener('click', () => modal.classList.add('hidden'));
+closeBtn2.addEventListener('click', () => modal.classList.add('hidden'));
+
+// Icon picker
+const iconInput = document.getElementById('iconInput');
+const iconGrid = document.getElementById('iconGrid');
+const selectedIcon = document.getElementById('selectedIcon');
+
+iconInput.addEventListener('click', () => {
+    iconGrid.classList.toggle('hidden');
+});
+
+// Khi chọn icon
+iconGrid.querySelectorAll('div').forEach(div => {
+    div.addEventListener('click', () => {
+        selectedIcon.value = div.textContent;
+        iconInput.value = div.textContent;
+        iconGrid.classList.add('hidden');
+
+        iconGrid.querySelectorAll('div').forEach(d => d.classList.remove('bg-pink-200'));
+        div.classList.add('bg-pink-200');
+    });
+});
+
+// Click ra ngoài để đóng
+document.addEventListener('click', function(e){
+    if (!iconInput.contains(e.target) && !iconGrid.contains(e.target)){
+        iconGrid.classList.add('hidden');
+    }
+});
+</script>
 
 <script src="./assets/js/dashboard.js"></script>
 </body>

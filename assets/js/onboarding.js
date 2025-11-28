@@ -95,9 +95,5 @@ closeBtn.addEventListener("click", () => {
   document.querySelector(".fixed")?.classList.add("hidden");
 });
 
-  document.getElementById("closeBtn").addEventListener("click", function () {
-    window.location.href = "dashboard.php"; // đổi thành file dashboard của bé
-  });
-
 // Khởi tạo bước đầu tiên
 updateStep();
