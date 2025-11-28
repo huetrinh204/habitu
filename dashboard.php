@@ -35,14 +35,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_user_habit']))
     $icon = $_POST['icon'];
 
     $stmt = $pdo->prepare("
-        INSERT INTO habit (habit_name, description, icon, status, created_hb, user_id)
-        VALUES (?, ?, ?, 'Người dùng', NOW(), ?)
+        INSERT INTO habit 
+        (habit_name, description, icon, status, created_hb, user_id, current_streak, last_completed_date)
+        VALUES (?, ?, ?, 'Người dùng', NOW(), ?, 0, NULL)
     ");
 
     $stmt->execute([$name, $description, $icon, $user_id]);
     header("Location: dashboard.php");
     exit;
 }
+
 
 
 /* ==================== 2. XOÁ THÓI QUEN ==================== */
@@ -106,18 +108,9 @@ $completed_today = count(array_filter($habit_logs, fn($c)=>$c=='done'));
 /*====================== TỔNG CHUỖI NGÀY ======================= */ 
 
 // Lấy tổng chuỗi ngày của user: tính max streak trong bảng habit_logs
-$total_streak = 0;
-
-foreach ($habits as $hb) {
-    $stmt = $pdo->prepare("
-        SELECT current_streak 
-        FROM habit 
-        WHERE habit_id=? AND (status='Người dùng' AND user_id=?)
-    ");
-    $stmt->execute([$hb['habit_id'], $user_id]);
-    $streak = $stmt->fetchColumn();
-    $total_streak += $streak ? (int)$streak : 0;
-}
+$stmt = $pdo->prepare("SELECT total_streak FROM users WHERE user_id=?");
+$stmt->execute([$user_id]);
+$total_streak = (int)$stmt->fetchColumn();
 ?>
 
 
