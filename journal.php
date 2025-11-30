@@ -6,11 +6,10 @@ if (!isset($_SESSION["user_id"])) {
 }
 include "config.php";
 
-$username = $_SESSION["username"];
 $user_id = $_SESSION["user_id"];
 
-// Xử lý lưu nhật ký
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['title'])) {
+// Thêm nhật ký mới
+if ($_SERVER['REQUEST_METHOD']==='POST' && isset($_POST['title'])){
     $journal_date = $_POST['journal_date'] ?? '';
     $title = $_POST['title'] ?? '';
     $content = $_POST['content'] ?? '';
@@ -22,13 +21,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['title'])) {
         $id = $pdo->lastInsertId();
 
         echo json_encode([
-            'success' => true,
-            'journal' => [
-                'id' => $id,
-                'title' => $title,
-                'content' => $content,
-                'journal_date' => $journal_date,
-                'icon' => $icon
+            'success'=>true,
+            'journal'=>[
+                'id'=>$id,
+                'title'=>$title,
+                'content'=>$content,
+                'journal_date'=>$journal_date,
+                'icon'=>$icon
             ]
         ]);
         exit();
@@ -40,11 +39,9 @@ $stmt = $pdo->prepare("SELECT * FROM health_journal WHERE user_id=? ORDER BY jou
 $stmt->execute([$user_id]);
 $journals = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
-
 <!DOCTYPE html>
 <html lang="vi">
 <body class="bg-gradient-to-br from-cyan-300 to-teal-400 min-h-screen">
-
 <?php include "navbar.php"; ?>
 
 <header class="text-center py-6">
@@ -63,7 +60,7 @@ $journals = $stmt->fetchAll(PDO::FETCH_ASSOC);
   <div id="journalList" class="space-y-4">
     <?php foreach($journals as $j): ?>
       <div class="bg-white p-4 rounded-xl shadow-md cursor-pointer flex items-center justify-between journal-item"
-           data-id="<?= $j['id'] ?>"
+           data-id="<?= $j['journal_id'] ?>"
            data-title="<?= htmlspecialchars($j['title']) ?>"
            data-content="<?= htmlspecialchars($j['content']) ?>"
            data-date="<?= $j['journal_date'] ?>"
@@ -86,7 +83,7 @@ $journals = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 <!-- POPUP VIẾT NHẬT KÝ -->
 <div id="journalPopup" class="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center hidden z-50">
-  <div class="bg-white w-[550px] p-6 rounded-xl shadow-xl animate-fadeIn">
+  <div class="bg-white w-[550px] p-6 rounded-xl shadow-xl">
     <div class="flex justify-between items-center mb-4">
       <h3 class="text-lg font-semibold">Viết Nhật Ký Mới</h3>
       <button onclick="closeJournalPopup()" class="text-gray-500 text-xl hover:text-black">×</button>
@@ -135,7 +132,10 @@ $journals = $stmt->fetchAll(PDO::FETCH_ASSOC);
   </div>
 </div>
 
-<div id="saveMessage" class="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg hidden z-50"></div>
+<!-- POPUP THÔNG BÁO -->
+<div id="saveMessage" 
+     class="fixed top-4 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-4 py-2 rounded shadow-lg hidden z-50">
+</div>
 
 <?php include "footer.php"; ?>
 
@@ -147,15 +147,13 @@ const emotionGrid = document.getElementById("emotionGrid");
 const selectedEmotion = document.getElementById("selectedEmotion");
 const saveMsg = document.getElementById("saveMessage");
 
-// Mở popup
+// Mở popup viết nhật ký
 document.getElementById("openJournalPopup").addEventListener("click", ()=> popup.classList.remove("hidden"));
-
-// Đóng popup
 function closeJournalPopup(){
     popup.classList.add("hidden");
     journalForm.reset();
-    selectedEmotion.value = "";
-    emotionInput.value = "";
+    selectedEmotion.value="";
+    emotionInput.value="";
     emotionGrid.querySelectorAll('div').forEach(d=>d.classList.remove('bg-purple-200'));
 }
 
@@ -176,7 +174,7 @@ document.addEventListener('click', e=>{
     }
 });
 
-// Thêm sự kiện xem chi tiết & xoá
+// Xem chi tiết & xoá
 function attachEvents(div){
     // Xem chi tiết
     div.querySelector('.view-btn').addEventListener('click', e=>{
@@ -195,7 +193,7 @@ function attachEvents(div){
 
         fetch("delete_journal.php", {
             method: "POST",
-            headers: {"Content-Type": "application/x-www-form-urlencoded"},
+            headers: {"Content-Type":"application/x-www-form-urlencoded"},
             body: new URLSearchParams({journal_id: div.dataset.id})
         })
         .then(res=>res.json())
@@ -205,7 +203,9 @@ function attachEvents(div){
                 saveMsg.textContent = "✅ Nhật ký đã được xoá!";
                 saveMsg.classList.remove("hidden");
                 setTimeout(()=> saveMsg.classList.add("hidden"),2500);
-            } else alert("Lỗi khi xoá nhật ký!");
+            } else {
+                alert("Lỗi khi xoá nhật ký!");
+            }
         });
     });
 }
