@@ -78,10 +78,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_user_habit']))
     exit;
 }
 
-/*==================== 4. Chuỗi thói quen ================ */
-
 $today = date('Y-m-d');
 
+/*==================== 1. Lấy tất cả habit ====================*/
 // Lấy tất cả thói quen mẫu + thói quen người dùng
 $stmt = $pdo->prepare("
     SELECT * FROM habit 
@@ -94,23 +93,35 @@ $habits = $stmt->fetchAll(PDO::FETCH_ASSOC);
 // Tổng thói quen
 $total_habits = count($habits);
 
-// Lấy completed hôm nay của user
+/*==================== 2. Lấy completed hôm nay ====================*/
+// Lấy tất cả log hôm nay của user
 $stmt = $pdo->prepare("
-    SELECT habit_id, completed FROM habit_logs
+    SELECT habit_id, completed 
+    FROM habit_logs 
     WHERE user_id=? AND log_date=?
 ");
 $stmt->execute([$user_id, $today]);
 $habit_logs = $stmt->fetchAll(PDO::FETCH_KEY_PAIR); // habit_id => completed
 
+// Số thói quen đã done hôm nay
 $completed_today = count(array_filter($habit_logs, fn($c)=>$c=='done'));
 
-
-/*====================== TỔNG CHUỖI NGÀY ======================= */ 
-
-// Lấy tổng chuỗi ngày của user: tính max streak trong bảng habit_logs
+/*==================== 3. Lấy tổng chuỗi ngày ====================*/
+// Lấy total_streak từ bảng users
 $stmt = $pdo->prepare("SELECT total_streak FROM users WHERE user_id=?");
 $stmt->execute([$user_id]);
 $total_streak = (int)$stmt->fetchColumn();
+
+/*==================== 4. Lấy streak từng habit ====================*/
+// Chuẩn bị mảng streak của từng habit để hiển thị
+$habit_streaks = [];
+foreach($habits as $hb){
+    $habit_id = $hb['habit_id'];
+    $stmt = $pdo->prepare("SELECT current_streak FROM habit WHERE habit_id=? AND user_id=?");
+    $stmt->execute([$habit_id, $user_id]);
+    $habit_streaks[$habit_id] = (int)$stmt->fetchColumn();
+}
+
 ?>
 
 
@@ -156,6 +167,7 @@ $total_streak = (int)$stmt->fetchColumn();
       <h3 class="font-semibold">Tổng chuỗi ngày</h3>
     <p class="text-lg font-bold" id="totalStreak"><?= $total_streak ?> ngày</p>
 
+
     </div>
   </div>
 </section>
@@ -177,8 +189,9 @@ $total_streak = (int)$stmt->fetchColumn();
 
         <!-- Checkbox -->
         <input type="checkbox" class="habit-checkbox" 
-           data-habit-id="<?= $hb['habit_id'] ?>"
-           <?= isset($habit_logs[$hb['habit_id']]) && $habit_logs[$hb['habit_id']] === 'done' ? 'checked' : '' ?>>
+       data-habit-id="<?= $hb['habit_id'] ?>"
+       <?= isset($habit_logs[$hb['habit_id']]) && $habit_logs[$hb['habit_id']] === 'done' ? 'checked' : '' ?>>
+
 
         <!-- Icon -->
         <div class="text-3xl"><?= htmlspecialchars($hb['icon']) ?></div>
@@ -190,9 +203,7 @@ $total_streak = (int)$stmt->fetchColumn();
         </div>
 
         <!-- Chuỗi streak -->
-        <div class="streak text-orange-400 font-semibold ml-auto mr-3">
-    <?= isset($hb['current_streak']) ? $hb['current_streak'] : 0 ?> ngày
-</div>
+        <div class="streak text-orange-400 font-semibold ml-auto mr-3"></div>
         <!-- Nút sửa / xoá -->
         <div class="flex gap-2">
             <!-- Nút sửa -->
@@ -216,7 +227,7 @@ $total_streak = (int)$stmt->fetchColumn();
 </section>
 
 <!-- POPUP THÊM THÓI QUEN -->
-<!-- Popup Form -->
+
 <div id="createHabitModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
     <div class="bg-white rounded-2xl shadow-2xl w-11/12 md:w-1/2 p-6 relative">
 
@@ -481,50 +492,61 @@ function closeEditModal() {
     document.getElementById("editHabitModal").classList.add("hidden");
 }
 
-// Xử lí check thói quen đã hoàn thành -> cập nhật trong bảng habit_logs
-document.querySelectorAll('.habit-checkbox').forEach(cb => {
-    cb.addEventListener('change', function() {
-        const habitId = this.dataset.habitId;
-        const completed = this.checked ? 'done' : 'missed';
+// Lấy tất cả checkbox thói quen
+const allCheckboxes = document.querySelectorAll('.habit-checkbox');
+const completedEl = document.getElementById('completedToday');
+const percentEl = document.getElementById('completedPercent');
+const totalStreakEl = document.getElementById('totalStreak');
+const congratsMsg = document.getElementById('congratsMessage');
+const audio = document.getElementById('celebrationSound');
 
-        fetch('update_habit_log.php', {
-            method: 'POST',
-            headers: {'Content-Type':'application/json'},
-            body: JSON.stringify({habitId, completed})
-        })
-        .then(res => res.json())
-        .then(data => {
-            if(data.success){
-                // Update streak của thói quen
-                const streakEl = this.closest('.habit-item').querySelector('.streak');
-                streakEl.textContent = data.current_streak + ' ngày';
+allCheckboxes.forEach(cb => {
+  cb.addEventListener('change', function() {
+    const habitId = this.dataset.habitId;
+    const completed = this.checked ? 'done' : 'missed';
 
-                // Update tổng chuỗi ngày
-                document.getElementById('totalStreak').textContent = data.total_streak + ' ngày';
+    // 1️⃣ Cập nhật tạm thời trên client
+    const completedCount = Array.from(allCheckboxes).filter(c => c.checked).length;
+    const totalCount = allCheckboxes.length;
+    completedEl.textContent = completedCount;
+    percentEl.textContent = totalCount ? Math.round(completedCount / totalCount * 100) : 0;
 
-                // Update completed hôm nay và %
-                const completedEl = document.getElementById('completedToday');
-                const percentEl = document.getElementById('completedPercent');
-                completedEl.textContent = data.completed_today;
-                percentEl.textContent = data.total_habits ? Math.round(data.completed_today / data.total_habits * 100) : 0;
+    // Hiển thị/ẩn thông báo 100%
+    if(completedCount === totalCount){
+      if(congratsMsg){
+        congratsMsg.style.display = 'block';
+        audio.currentTime = 0;
+        audio.play();
+        setTimeout(() => { congratsMsg.style.display = 'none'; }, 3000);
+      }
+    } else {
+      if(congratsMsg) congratsMsg.style.display = 'none';
+    }
 
-                // Hiển thị thông báo 100% nếu đạt đủ
-                if(data.completed_today === data.total_habits){
-                    const msg = document.getElementById('congratsMessage');
-                    const audio = document.getElementById('celebrationSound');
-                    if(msg){
-                        msg.style.display = 'block';
-                        audio.currentTime = 0;
-                        audio.play();
-                        setTimeout(()=>{msg.style.display='none';},3000);
-                    }
-                }
-            }
-        });
-    });
+    // 2️⃣ Gửi request cập nhật lên server
+    fetch('update_habit_log.php', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({habitId, completed})
+    })
+    .then(res => res.json())
+    .then(data => {
+      if(data.success){
+        // Cập nhật streak của thói quen
+        const streakEl = this.closest('.habit-item').querySelector('.streak');
+        if(streakEl){
+          streakEl.textContent = data.current_streak + ' ngày';
+          streakEl.classList.add('streak-updated');
+          setTimeout(()=> streakEl.classList.remove('streak-updated'), 1000);
+        }
+
+        // Cập nhật tổng chuỗi ngày
+        if(totalStreakEl) totalStreakEl.textContent = data.total_streak + ' ngày';
+      }
+    })
+    .catch(err => console.error('Error updating habit log:', err));
+  });
 });
-
-
 
 
 

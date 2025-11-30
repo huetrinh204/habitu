@@ -333,3 +333,9 @@ body {
 .social-icons img:hover {
   transform: scale(1.2);
 }
+
+.streak-updated {
+  color: green;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
