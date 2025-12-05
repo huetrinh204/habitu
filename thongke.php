@@ -22,15 +22,21 @@ $username = $_SESSION["username"];
 <body style="background: linear-gradient(to right, #00c8ffb2, #006ef5c0)";>
 
 <?php include "navbar.php"; ?>
+<div class="mb-6 text-center mt-10">
 
+    <h1 class="text-2xl font-bold text-white leading-loose">
+        Thống Kê Thói Quen 📊
+    </h1>
 
-
+    <p class="text-sm text-white leading-relaxed">
+        Xem tổng quan và tiến trình của bạn 🌟
+    </p>
+</div>
 <!-- MAIN -->
 <section class="container mx-auto mt-10 px-4">
   <div class="bg-white/95 rounded-3xl shadow-xl p-7 max-w-5xl mx-auto">
 
-    <h2 class="text-xl font-semibold text-gray-800 mb-4">Thống Kê Thói Quen</h2>
-    <p class="text-gray-600 mb-6">Xem tổng quan và tiến trình của bạn</p>
+   
 
    <div class="grid grid-cols-3 gap-4 justify-center mb-6">
   <div class="p-4 bg-teal-100 rounded-xl flex items-center gap-3">

@@ -21,11 +21,16 @@ $username = $_SESSION["username"];
 
 
 <!-- HEADER -->
-<header class="text-center py-6">
-  <h2 class="text-2xl font-semibold text-white drop-shadow-lg">Trung Tâm Hỗ Trợ 🐱✨</h2>
-  <p class="text-gray-100">Chúng mình luôn sẵn sàng giúp bạn sử dụng Habitu tốt hơn!</p>
-</header>
+  <div class="mb-6 text-center mt-10">
 
+    <h1 class="text-2xl font-bold text-white leading-loose">
+        Trung Tâm Hỗ Trợ 🐱
+    </h1>
+
+    <p class="text-sm text-white leading-relaxed">
+        Chúng mình luôn sẵn sàng giúp bạn sử dụng Habitu tốt hơn! ✨
+    </p>
+</div>
 
 <!-- MAIN -->
 <section class="max-w-5xl mx-auto px-6 pb-20 space-y-8">

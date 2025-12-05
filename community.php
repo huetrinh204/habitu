@@ -126,10 +126,17 @@ function esc($s) {
 <body style="background: linear-gradient(to right, #00c8ffb2, #006ef5c0)">
 <div class="max-w-4xl mx-auto py-10 px-4">
 
-    <div class="mb-6">
-        <h1 class="text-2xl font-bold text-teal-700">Cộng Đồng Habitu</h1>
-        <p class="text-sm text-gray-600">Chia sẻ hành trình và động viên nhau 🌟</p>
-    </div>
+   <div class="mb-6 text-center">
+   
+
+    <h1 class="text-2xl font-bold text-white leading-loose">
+        Cộng Đồng Habitu 🐱
+    </h1>
+
+    <p class="text-sm text-white leading-relaxed">
+        Chia sẻ hành trình và động viên nhau 🌟
+    </p>
+</div>
 
     <?php if ($errors): ?>
         <div class="mb-4">
@@ -182,9 +189,7 @@ function esc($s) {
                     <div class="mt-4 border-t pt-3 flex items-center justify-between text-sm">
                         <div class="flex items-center gap-4 text-gray-500">
 
-                            <div class="flex items-center gap-2">
-                                <i class="far fa-heart"></i><span>0</span>
-                            </div>
+                            
 
                             <!-- ⭐ ICON BÌNH LUẬN → MỞ COMMENT -->
                             <div class="flex items-center gap-2 cursor-pointer"

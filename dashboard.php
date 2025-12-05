@@ -133,10 +133,17 @@ foreach($habits as $hb){
 <?php include "navbar.php"; ?>
 
 <!-- Header -->
-<header class="welcome text-center py-6">
-  <h2 class="text-2xl font-semibold text-gray-700" style="color: white;">Chào mừng bạn đến với Habitu! 🐱✨</h2>
-  <p class="text-gray-600">Hãy tiếp tục xây dựng thói quen lành mạnh của bạn!</p>
-</header>
+ <div class="mb-6 text-center mt-10">
+
+    <h1 class="text-2xl font-bold text-white leading-loose">
+        Chào Mừng Bạn Đến Với Habitu! 🐱
+    </h1>
+
+    <p class="text-sm text-white leading-relaxed">
+        Hãy tiếp tục xây dựng thói quen lành mạnh của bạn ngay thôi nào! ✨ 
+    </p>
+</div>
+
 
 <!-- Stats -->
 <section class="stats container mx-auto grid grid-cols-3 gap-6 px-6">

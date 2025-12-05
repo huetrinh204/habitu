@@ -46,10 +46,17 @@ $journals = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <body style="background: linear-gradient(to right, #00c8ffb2, #006ef5c0)";>
 <?php include "navbar.php"; ?>
 
-<header class="text-center py-6">
-  <h2 style="color: aliceblue;" class="text-2xl font-semibold">Nhật ký của bạn 📘✨</h2>
-  <p style="color: aliceblue;">Ghi lại cảm xúc và suy nghĩ mỗi ngày.</p>
-</header>
+<div class="mb-6 text-center mt-10">
+
+    <h1 class="text-2xl font-bold text-white leading-loose">
+        Nhật Ký Của Bạn 📘
+    </h1>
+
+    <p class="text-sm text-white leading-relaxed">
+        Ghi lại cảm xúc và suy nghĩ mỗi ngày ✨ 
+    </p>
+</div>
+
 
 <section class="container mx-auto mt-8 px-6">
   <div class="flex justify-between items-center mb-4">

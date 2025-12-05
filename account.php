@@ -19,13 +19,18 @@ $username = $_SESSION["username"];
 
 
 <!-- PAGE TITLE -->
-<header class="text-center py-6">
-  <h2 class="text-2xl font-semibold text-white drop-shadow-lg">
-    Tài Khoản Cá Nhân 🐱✨
-  </h2>
-  <p class="text-gray-100">Cập nhật thông tin và bảo mật tài khoản của bạn</p>
-</header>
+ <!-- Header -->
+  
+ <div class="mb-6 text-center mt-10">
 
+    <h1 class="text-2xl font-bold text-white leading-loose">
+        Tài Khoản Cá Nhân 🐱
+    </h1>
+
+    <p class="text-sm text-white leading-relaxed">
+        Cập nhật thông tin và bảo mật tài khoản của bạn ✨ 
+    </p>
+</div>
 
 <!-- MAIN CONTENT -->
 <div class="max-w-4xl mx-auto px-6 space-y-6 pb-16">
