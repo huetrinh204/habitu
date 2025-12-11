@@ -58,6 +58,15 @@ while ($row = $q4->fetch(PDO::FETCH_ASSOC)) {
     $commentDays[] = $row["day"];
     $commentCounts[] = $row["total"];
 }
+
+
+/* ================== DANH SÁCH USER ================== */
+$users = $pdo->query("SELECT user_id, username FROM users ORDER BY username ASC")->fetchAll(PDO::FETCH_ASSOC);
+
+/* ================== USER MỚI TẠO THÓI QUEN GẦN NHẤT ================== */
+$q = $pdo->query("SELECT user_id FROM habit ORDER BY created_hb DESC LIMIT 1");
+$defaultUser = $q->fetchColumn();
+if (!$defaultUser) $defaultUser = $users[0]["user_id"]; // fallback nếu chưa ai tạo thói quen
 ?>
 
 <!DOCTYPE html>
@@ -128,8 +137,30 @@ while ($row = $q4->fetch(PDO::FETCH_ASSOC)) {
     </div>
 
     <div class="bg-white p-6 rounded-2xl shadow">
-        <h3 class="text-lg font-bold mb-3 text-green-600">Số thói quen theo ngày</h3>
-        <canvas id="habitChart" height="120"></canvas>
+        <div class="flex items-center justify-between mb-3">
+    <h3 id="habitChartTitle" class="text-lg font-bold text-green-600">
+    Số thói quen theo ngày (<?= htmlspecialchars($users[array_search($defaultUser, array_column($users, 'user_id'))]['username']) ?>)
+</h3>
+
+    <!-- DROPDOWN CHỌN USER -->
+    <select id="habitUserSelect" 
+            class="border px-3 py-1 rounded text-sm"
+            onchange="changeUserHabits()">
+
+        <?php foreach ($users as $u): ?>
+            <option value="<?= $u['user_id'] ?>"
+                <?= $u["user_id"] == $defaultUser ? 'selected' : '' ?>>
+                <?= htmlspecialchars($u['username']) ?>
+            </option>
+        <?php endforeach; ?>
+
+    </select>
+</div>
+        <!-- Biểu đồ thói quen toàn hệ thống -->
+<canvas id="habitChartDefault" height="120" class="mb-8"></canvas>
+
+<!-- Biểu đồ thói quen theo user -->
+<canvas id="habitChartUser" height="120"></canvas>
     </div>
 
     <div class="bg-white p-6 rounded-2xl shadow">
@@ -138,6 +169,29 @@ while ($row = $q4->fetch(PDO::FETCH_ASSOC)) {
     </div>
 
 </div>
+
+<?php
+/* API trả về dữ liệu thói quen theo user */
+if (isset($_GET["loadHabitUser"])) {
+    $uid = $_GET["loadHabitUser"];
+
+    $stm = $pdo->prepare("
+        SELECT DATE(created_hb) AS day, COUNT(*) AS total
+        FROM habit
+        WHERE user_id = ?
+        GROUP BY day
+        ORDER BY day ASC
+    ");
+    $stm->execute([$uid]);
+    $rows = $stm->fetchAll(PDO::FETCH_ASSOC);
+
+    echo json_encode([
+        "days" => array_column($rows, "day"),
+        "counts" => array_column($rows, "total")
+    ]);
+    exit;
+}
+?>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -159,7 +213,7 @@ new Chart(postChart, {
     }
 });
 
-new Chart(habitChart, {
+new Chart(document.getElementById("habitChartDefault"), {
     type: 'line',
     data: {
         labels: <?= json_encode($habitDays) ?>,
@@ -174,6 +228,52 @@ new Chart(commentChart, {
         datasets: [{ label: 'Bình luận', data: <?= json_encode($commentCounts) ?>, borderWidth: 2 }]
     }
 });
+
+
+//CHỌN NGƯỜI DÙNG ĐỂ XEM THÓI QUEN NGƯỜI DÙNG ĐÃ TẠO 
+let habitChartInstance = null;
+
+function changeUserHabits() {
+    let uid = document.getElementById("habitUserSelect").value;
+    let selectedUser = document.querySelector("#habitUserSelect option:checked").text;
+
+    // Đổi tiêu đề
+    document.getElementById("habitChartTitle").textContent =
+        "Số thói quen theo ngày của " + selectedUser;
+
+    // Gọi API lấy dữ liệu theo user
+    fetch("?loadHabitUser=" + uid)
+        .then(res => res.json())
+        .then(data => {
+
+            const ctx = document.getElementById("habitChartUser").getContext("2d");
+
+            // Xóa chart cũ
+            if (habitChartInstance) {
+                habitChartInstance.destroy();
+            }
+
+            // Tạo chart mới
+            habitChartInstance = new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels: data.days,
+                    datasets: [{
+                        label: "Thói quen",
+                        data: data.counts,
+                        borderWidth: 2,
+                        borderColor: "green",
+                        tension: 0.3
+                    }]
+                }
+            });
+
+        });
+        window.onload = function() {
+    changeUserHabits();
+};
+}
+
 </script>
 
 </body>
