@@ -146,7 +146,7 @@ foreach($habits as $hb){
 
 
 <!-- Stats -->
-<section class="stats container mx-auto grid grid-cols-3 gap-6 px-6">
+<section class="stats container mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
   <div class="stat-box bg-white shadow-md p-5 rounded-lg flex items-center gap-4">
     <img style="border-radius:60%;width:50px;height:50px;" src="assets/icons/sun.png" alt="icon">
     <div>
@@ -181,16 +181,16 @@ foreach($habits as $hb){
 
 <!-- Habits -->
 <section class="habits-section px-6 mt-8">
-  <div class="flex justify-between items-center mb-4">
+  <div class="flex justify-between items-center mb-4 flex-wrap gap-3">
     <h3 class="text-lg font-semibold text-gray-800">Thói Quen Của Bạn</h3>
     <button id="addHabitBtn" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md">
       + Thêm Thói Quen
     </button>
   </div>
 
- <div id="habitList" class="habit-list">
+<div id="habitList" class="habit-list space-y-3">
 <?php foreach ($habits as $hb): ?>
-    <div class="habit-item bg-white p-4 rounded-xl shadow-md mb-3 flex items-center gap-3 relative">
+    <div class="habit-item bg-white p-4 rounded-xl shadow-md mb-3 flex items-center gap-3 relative sm:flex-nowrap flex-wrap">
 
         <!-- Checkbox -->
         <input type="checkbox" class="habit-checkbox" 
@@ -360,6 +360,70 @@ foreach($habits as $hb){
     </div>
 </div>
 <style>
+
+    /* ======= RESPONSIVE HABITU DASHBOARD ======= */
+
+/* --- Stats responsive --- */
+@media (max-width: 768px) {
+  .stats {
+    grid-template-columns: 1fr !important;
+  }
+
+  .stat-box {
+    flex-direction: row;
+    padding: 15px;
+  }
+}
+
+/* --- Habit item responsive --- */
+@media (max-width: 640px) {
+  .habit-item {
+    flex-wrap: wrap;
+    padding: 16px;
+  }
+
+  .habit-item .text-3xl {
+    font-size: 26px;
+  }
+
+  .habit-item .streak {
+    width: 100%;
+    margin: 10px 0 0;
+    text-align: right;
+  }
+
+  .habit-item .flex.gap-2 {
+    margin-left: auto;
+  }
+}
+
+/* --- Popup mobile full width --- */
+@media (max-width: 640px) {
+  #createHabitModal .md\:w-1\/2,
+  #editHabitModal .md\:w-1\/2 {
+    width: 90% !important;
+    margin: 0 10px;
+  }
+}
+
+/* --- Icon grid fix for mobile --- */
+@media (max-width: 640px) {
+  #iconGrid {
+    grid-template-columns: repeat(4, 1fr);
+    max-height: 200px;
+  }
+}
+
+/* --- Header --- */
+@media (max-width: 640px) {
+  h1.text-2xl {
+    font-size: 20px;
+  }
+
+  p.text-sm {
+    font-size: 14px;
+  }
+}
 @keyframes fadeIn {
   from { opacity: 0; transform: scale(0.95); }
   to   { opacity: 1; transform: scale(1); }
