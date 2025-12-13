@@ -126,7 +126,22 @@ foreach ($habits as $hb) {
 
 <!DOCTYPE html>
 <html lang="vi">
+  <style>
+/* Giới hạn dòng chữ */
+.line-clamp-1 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
 
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+</style>
 <body style="background: linear-gradient(to right, #00c8ffb2, #006ef5c0)" ;>
 
   <!-- NAV -->
@@ -188,42 +203,46 @@ foreach ($habits as $hb) {
       </button>
     </div>
 
-    <div id="habitList" class="habit-list space-y-3">
+    <div id="habitList"
+  class="habit-list grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
       <?php foreach ($habits as $hb): ?>
         <div
-          class="habit-item bg-white p-4 rounded-xl shadow-md mb-3 flex items-center gap-3 relative sm:flex-nowrap flex-wrap">
+  class="habit-item bg-white p-4 rounded-xl shadow-md flex flex-col gap-3 relative h-full">
 
           <!-- Checkbox -->
-          <input type="checkbox" class="habit-checkbox" data-habit-id="<?= $hb['habit_id'] ?>"
-            <?= isset($habit_logs[$hb['habit_id']]) && $habit_logs[$hb['habit_id']] === 'done' ? 'checked' : '' ?>>
+          <div class="flex items-center justify-between">
+  <input type="checkbox"
+    class="habit-checkbox w-5 h-5"
+    data-habit-id="<?= $hb['habit_id'] ?>"
+    <?= isset($habit_logs[$hb['habit_id']]) && $habit_logs[$hb['habit_id']] === 'done' ? 'checked' : '' ?>>
 
-
-          <!-- Icon -->
-          <div class="text-3xl"><?= htmlspecialchars($hb['icon']) ?></div>
+  <div class="text-3xl"><?= htmlspecialchars($hb['icon']) ?></div>
+</div>
 
           <!-- Tên + mô tả -->
           <div>
-            <h4 class="font-semibold text-gray-800"><?= htmlspecialchars($hb['habit_name']) ?></h4>
-            <p class="text-gray-500 text-sm"><?= htmlspecialchars($hb['description']) ?></p>
+            <h4 class="font-semibold text-gray-800 line-clamp-1"><?= htmlspecialchars($hb['habit_name']) ?></h4>
+              <p class="text-gray-500 text-sm line-clamp-2"><?= htmlspecialchars($hb['description']) ?></p>
           </div>
 
           <!-- Chuỗi streak -->
-          <div class="streak text-orange-400 font-semibold ml-auto mr-3"></div>
-          <!-- Nút sửa / xoá -->
-          <div class="flex gap-2">
-            <!-- Nút sửa -->
-            <button
-              onclick="openEditHabit('<?= $hb['habit_id'] ?>', '<?= htmlspecialchars($hb['habit_name']) ?>', '<?= htmlspecialchars($hb['description']) ?>', '<?= htmlspecialchars($hb['icon']) ?>')"
-              class="text-blue-600 hover:text-blue-800 font-semibold">
-              ✏️
-            </button>
+          <div class="flex items-center justify-between mt-auto">
+  <div class="streak text-orange-400 font-semibold text-sm"></div>
 
-            <!-- Nút xoá -->
-            <a href="dashboard.php?delete_user_habit=<?= $hb['habit_id'] ?>"
-              onclick="return confirm('Xóa thói quen này?')" class="text-red-600 hover:text-red-800 font-semibold">
-              🗑️
-            </a>
-          </div>
+  <div class="flex gap-2">
+    <button
+      onclick="openEditHabit('<?= $hb['habit_id'] ?>', '<?= htmlspecialchars($hb['habit_name']) ?>', '<?= htmlspecialchars($hb['description']) ?>', '<?= htmlspecialchars($hb['icon']) ?>')"
+      class="text-blue-600 hover:text-blue-800">
+      ✏️
+    </button>
+
+    <a href="dashboard.php?delete_user_habit=<?= $hb['habit_id'] ?>"
+      onclick="return confirm('Xóa thói quen này?')"
+      class="text-red-600 hover:text-red-800">
+      🗑️
+    </a>
+  </div>
+</div>
 
         </div>
       <?php endforeach; ?>
