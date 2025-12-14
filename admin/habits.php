@@ -58,15 +58,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['habit_id'])) {
     exit;
 }
 
-//Tìm kiếm thói quen
-$search = '';
-if (isset($_GET['search']) && !empty($_GET['search'])) {
-    $search = "%" . $_GET['search'] . "%";
-    $stmt = $pdo->prepare("SELECT * FROM habit WHERE habit_name LIKE ? ORDER BY created_hb DESC");
-    $stmt->execute([$search]);
-} else {
-    $stmt = $pdo->query("SELECT * FROM habit ORDER BY created_hb DESC");
+
+// ================= TÌM KIẾM & LỌC =================
+$where = [];
+$params = [];
+
+// Tìm theo tên
+if (isset($_GET['search']) && $_GET['search'] !== '') {
+    $where[] = "habit_name LIKE ?";
+    $params[] = "%" . $_GET['search'] . "%";
 }
+
+// Lọc thói quen mẫu (admin tạo)
+if (isset($_GET['filter']) && $_GET['filter'] === 'sample') {
+    $where[] = "status = 'Mẫu'";
+    $where[] = "user_id = ?";
+    $params[] = $user_id; // admin hiện tại
+}
+
+$sql = "SELECT * FROM habit";
+if (!empty($where)) {
+    $sql .= " WHERE " . implode(" AND ", $where);
+}
+$sql .= " ORDER BY created_hb DESC";
+
+$stmt = $pdo->prepare($sql);
+$stmt->execute($params);
 ?>
 
 
@@ -135,25 +152,35 @@ if (isset($_GET['search']) && !empty($_GET['search'])) {
         <!-- Search + Tạo Thói Quen Mẫu -->
         <div class="flex flex-wrap gap-4 mb-6 items-center justify-between w-full">
             <!-- Form tìm kiếm -->
-            <form method="GET" class="flex flex-col md:flex-row gap-3 w-full">
-                <input type="text" name="search" placeholder="🔍 Tìm kiếm thói quen..."
-                    class="border border-gray-300 px-4 py-2 rounded-l-lg flex-1 focus:outline-none"
-                    value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
+            <form method="GET" class="flex flex-wrap gap-3 w-full items-center">
 
-                <button type="submit"
-                    class="bg-blue-500 text-white px-4 py-2 rounded-r-lg hover:bg-blue-600 transition">
-                    <i class="ri-search-line"></i> Tìm
-                </button>
+    <input type="text" name="search" placeholder="🔍 Tìm kiếm thói quen..."
+        class="border border-gray-300 px-4 py-2 rounded-lg flex-1"
+        value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>">
 
-                <a href="habits.php" class="bg-gray-200 px-4 py-2 rounded ml-2 hover:bg-gray-300 transition">
-                    Tất cả
-                </a>
+    <button type="submit"
+        class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
+        <i class="ri-search-line"></i> Tìm
+    </button>
 
-                <button id="createHabitBtn" type="button"
-                    class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded md:ml-auto w-full md:w-auto font-bold">
-                    + Tạo Thói Quen Mẫu
-                </button>
-            </form>
+    <!-- NÚT MẪU -->
+    <a href="habits.php?filter=sample"
+        class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition">
+        <i class="ri-bookmark-line"></i> Mẫu
+    </a>
+
+    <!-- TẤT CẢ -->
+    <a href="habits.php"
+        class="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300 transition">
+        Tất cả
+    </a>
+
+    <button id="createHabitBtn" type="button"
+        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-bold ml-auto">
+        + Tạo Thói Quen Mẫu
+    </button>
+
+</form>
 
 
         </div>
