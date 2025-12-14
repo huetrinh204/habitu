@@ -127,7 +127,14 @@ $stmt->execute($params);
     $stmtUsers = $pdo->query("SELECT COUNT(*) AS total_users FROM users");
     $totalUsers = $stmtUsers->fetch(PDO::FETCH_ASSOC)['total_users'];
 
-
+    // Tổng hoàn thành (đếm trạng thái Done)
+    $stmtDone = $pdo->prepare("
+    SELECT COUNT(*) 
+    FROM habit_logs 
+    WHERE completed = 'missed'
+");
+    $stmtDone->execute();
+    $totalDone = $stmtDone->fetchColumn();
 
     ?>
 
@@ -138,25 +145,32 @@ $stmt->execute($params);
         <p class="text-gray-700 mb-6">Quản lý thói quen của người dùng và tạo thói quen mẫu</p>
 
         <!-- Stats -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-            <div class="bg-white shadow rounded-lg p-5 text-center">
-                <p class="text-gray-500">Tổng thói quen</p>
-                <h2 class="text-3xl font-bold text-blue-600"><?php echo $totalHabits; ?></h2>
-            </div>
-            <div class="bg-white shadow rounded-lg p-5 text-center">
-                <p class="text-gray-500">Thói quen mẫu</p>
-                <h2 class="text-3xl font-bold text-green-600"><?php echo $sampleHabits; ?></h2>
-            </div>
-            <div class="bg-white shadow rounded-lg p-5 text-center">
-                <p class="text-gray-500">Tổng người dùng</p>
-                <h2 class="text-3xl font-bold text-orange-500"><?php echo $totalUsers; ?></h2>
-            </div>
-            <div class="bg-white shadow rounded-lg p-5 text-center">
-                <p class="text-gray-500">Tổng hoàn thành</p>
-                <h2 class="text-3xl font-bold text-red-600">Updating</h2>
-            </div>
+ <div class="w-full mb-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+        
+        <div class="bg-white shadow rounded-lg p-5 text-center">
+            <p class="text-gray-500">Tổng thói quen</p>
+            <h2 class="text-3xl font-bold text-blue-600">
+                <?php echo $totalHabits; ?>
+            </h2>
         </div>
 
+        <div class="bg-white shadow rounded-lg p-5 text-center">
+            <p class="text-gray-500">Thói quen mẫu</p>
+            <h2 class="text-3xl font-bold text-green-600">
+                <?php echo $sampleHabits; ?>
+            </h2>
+        </div>
+
+        <div class="bg-white shadow rounded-lg p-5 text-center">
+            <p class="text-gray-500">Tổng người dùng</p>
+            <h2 class="text-3xl font-bold text-orange-500">
+                <?php echo $totalUsers; ?>
+            </h2>
+        </div>
+
+    </div>
+</div>
 
         <!-- Search + Tạo Thói Quen Mẫu -->
         <div class="flex flex-wrap gap-4 mb-6 items-center justify-between w-full">
@@ -522,7 +536,7 @@ $stmt->execute($params);
                         <th>Người tạo</th>
                         <th>Ngày tạo</th>
                         <th>Hoàn thành</th>
-                       
+
                         <th class="text-center">Hành động</th>
                     </tr>
                 </thead>
@@ -562,12 +576,13 @@ $stmt->execute($params);
                             echo "<td>" . date("d/m/Y", strtotime($row['created_hb'])) . "</td>";
 
                             // Hoàn thành (Done / Missed)
-                            
+                    
                             if ($row['completed'] == 'done') {
                                 echo "<td class='text-green-600 font-semibold'>Done</td>";
                             } else {
                                 echo "<td class='text-red-500 font-semibold'>Missed</td>";
-                            };
+                            }
+                            ;
 
                             // Hành động
                             echo "<td class='text-center text-lg'>
