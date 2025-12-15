@@ -129,17 +129,17 @@ foreach ($habits as $hb) {
 
 /*==================== 5. THÔNG ĐIỆP ĐỘNG LỰC THEO TIẾN ĐỘ ====================*/
 $progress_percent = $total_habits > 0
-    ? round($completed_today / $total_habits * 100)
-    : 0;
+  ? round($completed_today / $total_habits * 100)
+  : 0;
 
 if ($progress_percent == 100) {
-    $motivation_msg = "🔥 Tuyệt vời! Hôm nay bạn đã tiến rất gần mục tiêu!";
+  $motivation_msg = "🔥 Tuyệt vời! Hôm nay bạn đã tiến rất gần mục tiêu!";
 } elseif ($progress_percent >= 50) {
-    $motivation_msg = "✨ Bạn đang đi đúng hướng, cố thêm chút nữa nhé!";
+  $motivation_msg = "✨ Bạn đang đi đúng hướng, cố thêm chút nữa nhé!";
 } elseif ($progress_percent > 0) {
-    $motivation_msg = "🌱 Mỗi bước nhỏ đều có giá trị!";
+  $motivation_msg = "🌱 Mỗi bước nhỏ đều có giá trị!";
 } else {
-    $motivation_msg = "🚀 Hôm nay là một khởi đầu mới cho mục tiêu của bạn!";
+  $motivation_msg = "🚀 Hôm nay là một khởi đầu mới cho mục tiêu của bạn!";
 }
 
 ?>
@@ -181,15 +181,14 @@ if ($progress_percent == 100) {
     </p>
   </div>
 
-<?php if (!empty($health_goal)): ?>
-  <div class="fixed left-32 top-24 z-40">
+ <?php if (!empty($health_goal)): ?>
+  <div class="fixed right-32 top-28 z-40">
 
-    <div
-      class="w-30 h-30 rounded-full
-             bg-gradient-to-br from-yellow-100 to-yellow-200
-             shadow-xl flex flex-col items-center justify-center text-center
-             p-4 animate-float
-             hover:scale-105 transition-all duration-300">
+    <div class="w-35 h-35 rounded-full
+           bg-gradient-to-br from-yellow-100 to-yellow-200
+           shadow-xl flex flex-col items-center justify-center text-center
+           p-4 animate-float
+           hover:scale-105 transition-all duration-300">
 
       <div class="text-3xl mb-1">🎯</div>
 
@@ -211,48 +210,64 @@ if ($progress_percent == 100) {
 <?php endif; ?>
 
 
+<div
+  id="motivationBox"
+  class="motivation-box bg-soft text-white shadow-md
+         fixed left-6 top-[18%] -translate-y-1/2
+         transition-all duration-500
+         flex items-start gap-3
+         note-paper z-40">
+  <!-- Mèo -->
+  <img
+    id="catAvatar"
+    src="assets/cat_sad.png"
+    alt="Cat"
+    class="w-14 h-14 rounded-full transition-transform duration-500"
+  >
 
- <!-- Stats -->
-<section
-  class="stats container mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 
-         gap-6 px-4 mb-12">
-  
-  <div class="stat-box bg-white shadow-md p-5 rounded-lg flex items-center gap-4">
-    <img style="border-radius:60%;width:50px;height:50px;" src="assets/icons/sun.png" alt="icon">
-    <div>
-      <h3 class="font-semibold">Tổng thói quen</h3>
-      <p class="text-lg font-bold"><?= $total_habits ?></p>
-    </div>
-  </div>
-
-  <div class="stat-box bg-white shadow-md p-5 rounded-lg flex items-center gap-4">
-    <img style="border-radius:60%;width:50px;height:50px;" src="assets/icons/check.png" alt="icon">
-    <div>
-      <h3 class="font-semibold">Hoàn thành hôm nay</h3>
-      <p class="text-lg font-bold">
-        <span id="completedToday"><?= $completed_today ?></span>/<?= $total_habits ?>
-        (<span id="completedPercent"><?= $total_habits ? round($completed_today / $total_habits * 100) : 0 ?></span>%)
-      </p>
-    </div>
-  </div>
-
-  <div class="stat-box bg-white shadow-md p-5 rounded-lg flex items-center gap-4">
-    <img style="border-radius:60%;width:50px;height:50px;" src="assets/icons/streak.png" alt="icon">
-    <div>
-      <h3 class="font-semibold">Tổng chuỗi ngày</h3>
-      <p class="text-lg font-bold" id="totalStreak"><?= $total_streak ?> ngày</p>
-    </div>
-  </div>
-</section>
-
-<!-- Motivation -->
-<div class="pb-16">
-  <section class="container mx-auto px-4 mt-12">
-    <div class="fire-border relative rounded-xl p-4 text-center text-white">
+  <!-- Lời nói -->
+  <div class="relative bg-white/90 text-gray-800 px-3 py-2 rounded-lg shadow
+              speech-bubble max-w-[200px]">
+    <p id="motivationText" class="text-sm font-medium leading-relaxed">
       <?= $motivation_msg ?>
+    </p>
+  </div>
+
+</div>
+  <!-- Stats -->
+  <section class="stats container mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 
+         gap-6 px-4 mb-12">
+
+    <div class="stat-box bg-white shadow-md p-5 rounded-lg flex items-center gap-4">
+      <img style="border-radius:60%;width:50px;height:50px;" src="assets/icons/sun.png" alt="icon">
+      <div>
+        <h3 class="font-semibold">Tổng thói quen</h3>
+        <p class="text-lg font-bold"><?= $total_habits ?></p>
+      </div>
+    </div>
+
+    <div class="stat-box bg-white shadow-md p-5 rounded-lg flex items-center gap-4">
+      <img style="border-radius:60%;width:50px;height:50px;" src="assets/icons/check.png" alt="icon">
+      <div>
+        <h3 class="font-semibold">Hoàn thành hôm nay</h3>
+        <p class="text-lg font-bold">
+          <span id="completedToday"><?= $completed_today ?></span>/<?= $total_habits ?>
+          (<span id="completedPercent"><?= $total_habits ? round($completed_today / $total_habits * 100) : 0 ?></span>%)
+        </p>
+      </div>
+    </div>
+
+    <div class="stat-box bg-white shadow-md p-5 rounded-lg flex items-center gap-4">
+      <img style="border-radius:60%;width:50px;height:50px;" src="assets/icons/streak.png" alt="icon">
+      <div>
+        <h3 class="font-semibold">Tổng chuỗi ngày</h3>
+        <p class="text-lg font-bold" id="totalStreak"><?= $total_streak ?> ngày</p>
+      </div>
     </div>
   </section>
-</div>
+
+  <!-- Motivation -->
+
 
   <!-- Habits -->
   <section class="habits-section px-6 mt-8">
@@ -518,189 +533,242 @@ if ($progress_percent == 100) {
     }
 
     @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(-50%) translateX(0);
+      }
+
+      50% {
+        transform: translateY(-55%) translateX(2px);
+      }
+    }
+
+    .animate-float {
+      animation: float 4s ease-in-out infinite;
+    }
+
+    /* bong bóng thoại */
+.speech-bubble::before {
+  content: "";
+  position: absolute;
+  left: -8px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: 8px;
+  border-style: solid;
+  border-color: transparent white transparent transparent;
+}
+
+/* mèo chuyển động nhẹ */
+@keyframes catFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.animate-cat {
+  animation: catFloat 3s ease-in-out infinite;
+}
+   
+
+/* note giấy */
+.note-paper {
+  padding: 14px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #fffbe6, #fff3c4);
+  box-shadow:
+    0 10px 25px rgba(0, 0, 0, 0.15),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+
+  animation: noteFloat 4s ease-in-out infinite;
+}
+
+/* note nhúc nhích nhẹ */
+@keyframes noteFloat {
   0%, 100% {
     transform: translateY(-50%) translateX(0);
   }
   50% {
-    transform: translateY(-55%) translateX(2px);
+    transform: translateY(-50%) translateX(4px);
   }
 }
 
-.animate-float {
-  animation: float 4s ease-in-out infinite;
-}
-
- .fire-border {
-  background: linear-gradient(to right, #22c55e, #3b82f6); /* nền dịu */
-  position: relative;
-  z-index: 1;
-}
-
-/* 🔥 viền lửa */
-.fire-border::before {
+/* bong bóng thoại */
+.speech-bubble::before {
   content: "";
   position: absolute;
-  inset: -2px;
-  border-radius: inherit;
-  background: linear-gradient(
-    60deg,
-    #ff6a00,
-    #ff9f00,
-    #ff4500,
-    #ff9f00,
-    #ff6a00
-  );
-  background-size: 300% 300%;
-  animation: fireBorder 4s ease-in-out infinite;
-  filter: blur(6px);
-  z-index: -1;
+  left: -8px;
+  top: 16px;
+  border-width: 8px;
+  border-style: solid;
+  border-color: transparent white transparent transparent;
 }
-
-/* 🔥 glow nhẹ */
-.fire-border::after {
-  content: "";
-  position: absolute;
-  inset: -6px;
-  border-radius: inherit;
-  background: radial-gradient(
-    circle,
-    rgba(255, 140, 0, 0.35),
-    transparent 70%
-  );
- 
-  z-index: -2;
-  animation: fireGlow 3s ease-in-out infinite;
-}
-
-@keyframes fireBorder {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
 
   </style>
 
   <!-- FOOTER -->
   <?php include "footer.php"; ?>
 
-  <script>
-    const createBtn = document.getElementById('addHabitBtn');
-    const modal = document.getElementById('createHabitModal');
-    const closeBtn = document.getElementById('closeModalBtn');
-    const closeBtn2 = document.getElementById('closeModalBtn2');
+<script>
+  const createBtn = document.getElementById('addHabitBtn');
+  const modal = document.getElementById('createHabitModal');
+  const closeBtn = document.getElementById('closeModalBtn');
+  const closeBtn2 = document.getElementById('closeModalBtn2');
 
-    // Mở / đóng modal
-    createBtn.addEventListener('click', () => modal.classList.remove('hidden'));
-    closeBtn.addEventListener('click', () => modal.classList.add('hidden'));
-    closeBtn2.addEventListener('click', () => modal.classList.add('hidden'));
+  // Mở / đóng modal
+  createBtn.addEventListener('click', () => modal.classList.remove('hidden'));
+  closeBtn.addEventListener('click', () => modal.classList.add('hidden'));
+  closeBtn2.addEventListener('click', () => modal.classList.add('hidden'));
 
-    // Icon picker
-    const iconInput = document.getElementById('iconInput');
-    const iconGrid = document.getElementById('iconGrid');
-    const selectedIcon = document.getElementById('selectedIcon');
+  // Icon picker
+  const iconInput = document.getElementById('iconInput');
+  const iconGrid = document.getElementById('iconGrid');
+  const selectedIcon = document.getElementById('selectedIcon');
 
-    iconInput.addEventListener('click', () => {
-      iconGrid.classList.toggle('hidden');
+  iconInput.addEventListener('click', () => {
+    iconGrid.classList.toggle('hidden');
+  });
+
+  iconGrid.querySelectorAll('div').forEach(div => {
+    div.addEventListener('click', () => {
+      selectedIcon.value = div.textContent;
+      iconInput.value = div.textContent;
+      iconGrid.classList.add('hidden');
+
+      iconGrid.querySelectorAll('div').forEach(d => d.classList.remove('bg-pink-200'));
+      div.classList.add('bg-pink-200');
     });
+  });
 
-    // Khi chọn icon
-    iconGrid.querySelectorAll('div').forEach(div => {
-      div.addEventListener('click', () => {
-        selectedIcon.value = div.textContent;
-        iconInput.value = div.textContent;
-        iconGrid.classList.add('hidden');
+  document.addEventListener('click', function (e) {
+    if (!iconInput.contains(e.target) && !iconGrid.contains(e.target)) {
+      iconGrid.classList.add('hidden');
+    }
+  });
 
-        iconGrid.querySelectorAll('div').forEach(d => d.classList.remove('bg-pink-200'));
-        div.classList.add('bg-pink-200');
-      });
-    });
+  // ===== Edit habit =====
+  function openEditHabit(habitId, habitName, description, icon) {
+    document.getElementById("edit_habit_id").value = habitId;
+    document.getElementById("edit_habit_name").value = habitName;
+    document.getElementById("edit_description").value = description;
+    document.getElementById("edit_icon").value = icon;
+    document.getElementById("editHabitModal").classList.remove("hidden");
+  }
 
-    // Click ra ngoài để đóng
-    document.addEventListener('click', function (e) {
-      if (!iconInput.contains(e.target) && !iconGrid.contains(e.target)) {
-        iconGrid.classList.add('hidden');
+  function closeEditModal() {
+    document.getElementById("editHabitModal").classList.add("hidden");
+  }
+
+  // ===== Habit logic =====
+  const allCheckboxes = document.querySelectorAll('.habit-checkbox');
+  const completedEl = document.getElementById('completedToday');
+  const percentEl = document.getElementById('completedPercent');
+  const totalStreakEl = document.getElementById('totalStreak');
+  const congratsMsg = document.getElementById('congratsMessage');
+  const audio = document.getElementById('celebrationSound');
+
+  const motivationBox = document.getElementById('motivationBox');
+  const motivationText = document.getElementById('motivationText');
+
+  // ===== Mèo nói chuyện – UI =====
+  function updateMotivationUI() {
+  const motivationBox = document.getElementById('motivationBox');
+  const motivationText = document.getElementById('motivationText');
+  const catAvatar = document.getElementById('catAvatar');
+
+  const completedCount = Array.from(allCheckboxes).filter(c => c.checked).length;
+  const totalCount = allCheckboxes.length;
+  const percent = totalCount
+    ? Math.round((completedCount / totalCount) * 100)
+    : 0;
+
+  completedEl.textContent = completedCount;
+  percentEl.textContent = percent;
+
+  // 🐱 Biểu cảm mèo theo tiến độ
+  if (percent === 100 && totalCount > 0) {
+    motivationBox.classList.remove('bg-soft');
+    motivationBox.classList.add('bg-fire');
+
+    catAvatar.src = "assets/cat_fun.png";
+    catAvatar.classList.add('scale-110');
+
+    motivationText.textContent =
+      "😻 Meowww~ Đỉnh quá! Hôm nay bạn hoàn thành tất cả rồi đó!";
+  }
+  else if (percent >= 50) {
+    motivationBox.classList.remove('bg-fire');
+    motivationBox.classList.add('bg-soft');
+
+    catAvatar.src = "assets/cat_ok.png";
+    catAvatar.classList.remove('scale-110');
+
+    motivationText.textContent =
+      "😺 Tốt lắm nè~ Mình thấy bạn đang cố gắng đó!";
+  }
+  else {
+    motivationBox.classList.remove('bg-fire');
+    motivationBox.classList.add('bg-soft');
+
+    catAvatar.src = "assets/cat_sad.png";
+    catAvatar.classList.remove('scale-110');
+
+    motivationText.textContent =
+      "😿 Buồn ghê~ Bạn chả cố gắng tí nào!";
+  }
+}
+
+  // ===== Checkbox change =====
+  allCheckboxes.forEach(cb => {
+    cb.addEventListener('change', function () {
+      const habitId = this.dataset.habitId;
+      const completed = this.checked ? 'done' : 'missed';
+
+      updateMotivationUI();
+
+      const completedCount = Array.from(allCheckboxes).filter(c => c.checked).length;
+      const totalCount = allCheckboxes.length;
+
+      if (completedCount === totalCount && totalCount > 0 && congratsMsg) {
+        congratsMsg.style.display = 'block';
+        audio.currentTime = 0;
+        audio.play();
+        setTimeout(() => congratsMsg.style.display = 'none', 3000);
+      } else if (congratsMsg) {
+        congratsMsg.style.display = 'none';
       }
-    });
 
-
-    // Hàm mở popup Sửa thói quen
-    function openEditHabit(habitId, habitName, description, icon) {
-      // Đổ dữ liệu vào form
-      document.getElementById("edit_habit_id").value = habitId;
-      document.getElementById("edit_habit_name").value = habitName;
-      document.getElementById("edit_description").value = description;
-      document.getElementById("edit_icon").value = icon;
-
-      // Hiển thị popup
-      document.getElementById("editHabitModal").classList.remove("hidden");
-    }
-
-    // Hàm đóng popup
-    function closeEditModal() {
-      document.getElementById("editHabitModal").classList.add("hidden");
-    }
-
-    // Lấy tất cả checkbox thói quen
-    const allCheckboxes = document.querySelectorAll('.habit-checkbox');
-    const completedEl = document.getElementById('completedToday');
-    const percentEl = document.getElementById('completedPercent');
-    const totalStreakEl = document.getElementById('totalStreak');
-    const congratsMsg = document.getElementById('congratsMessage');
-    const audio = document.getElementById('celebrationSound');
-
-    allCheckboxes.forEach(cb => {
-      cb.addEventListener('change', function () {
-        const habitId = this.dataset.habitId;
-        const completed = this.checked ? 'done' : 'missed';
-
-        // 1️⃣ Cập nhật tạm thời trên client
-        const completedCount = Array.from(allCheckboxes).filter(c => c.checked).length;
-        const totalCount = allCheckboxes.length;
-        completedEl.textContent = completedCount;
-        percentEl.textContent = totalCount ? Math.round(completedCount / totalCount * 100) : 0;
-
-        // Hiển thị/ẩn thông báo 100%
-        if (completedCount === totalCount) {
-          if (congratsMsg) {
-            congratsMsg.style.display = 'block';
-            audio.currentTime = 0;
-            audio.play();
-            setTimeout(() => { congratsMsg.style.display = 'none'; }, 3000);
-          }
-        } else {
-          if (congratsMsg) congratsMsg.style.display = 'none';
-        }
-
-        // 2️⃣ Gửi request cập nhật lên server
-        fetch('update_habit_log.php', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ habitId, completed })
-        })
-          .then(res => res.json())
-          .then(data => {
-            if (data.success) {
-              // Cập nhật streak của thói quen
-              const streakEl = this.closest('.habit-item').querySelector('.streak');
-              if (streakEl) {
-                streakEl.textContent = data.current_streak + ' ngày';
-                streakEl.classList.add('streak-updated');
-                setTimeout(() => streakEl.classList.remove('streak-updated'), 1000);
-              }
-
-              // Cập nhật tổng chuỗi ngày
-              if (totalStreakEl) totalStreakEl.textContent = data.total_streak + ' ngày';
+      fetch('update_habit_log.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ habitId, completed })
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            const streakEl = this.closest('.habit-item')?.querySelector('.streak');
+            if (streakEl) {
+              streakEl.textContent = data.current_streak + ' ngày';
+              streakEl.classList.add('streak-updated');
+              setTimeout(() => streakEl.classList.remove('streak-updated'), 1000);
             }
-          })
-          .catch(err => console.error('Error updating habit log:', err));
-      });
+            if (totalStreakEl) totalStreakEl.textContent = data.total_streak + ' ngày';
+          }
+        })
+        .catch(err => console.error('Error updating habit log:', err));
     });
+  });
 
+  // ===== Init when load =====
+  document.addEventListener('DOMContentLoaded', () => {
+    updateMotivationUI();
+  });
+</script>
 
-
-
-  </script>
 
   <script src="./assets/js/dashboard.js"></script>
 
