@@ -83,7 +83,7 @@ if (isset($_POST['submit_feedback'])) {
             </details>
             <details class="bg-gray-100 p-4 rounded-xl cursor-pointer">
                 <summary class="font-semibold">Tôi muốn xóa thói quen?</summary>
-                <p class="text-gray-600 mt-2">Trong Trang Chủ, nhấn vào thói quen → chọn Xóa.</p>
+                <p class="text-gray-600 mt-2">Trong mục Thói Quen, nhấn vào thói quen → chọn biểu tượng 🗑️ .</p>
             </details>
             <details class="bg-gray-100 p-4 rounded-xl cursor-pointer">
                 <summary class="font-semibold">Làm sao để tạo thói quen mới?</summary>

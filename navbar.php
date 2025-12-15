@@ -43,7 +43,7 @@ $username = $_SESSION["username"] ?? "User";
 
     <!-- Menu Desktop -->
     <ul class="hidden md:flex gap-8 font-medium">
-      <li class="flex items-center gap-1"><i class="fas fa-home"></i><a href="dashboard.php" class="hover:text-yellow-300">Trang Chủ</a></li>
+      <li class="flex items-center gap-1"><i class="fas fa-home"></i><a href="dashboard.php" class="hover:text-yellow-300">Thói Quen</a></li>
       <li class="flex items-center gap-1"><i class="fas fa-book"></i><a href="journal.php" class="hover:text-yellow-300">Nhật Ký</a></li>
       <li class="flex items-center gap-1"><i class="fas fa-users"></i><a href="community.php" class="hover:text-yellow-300">Cộng Đồng</a></li>
       <li class="flex items-center gap-1"><i class="fas fa-chart-bar"></i><a href="thongke.php" class="hover:text-yellow-300">Thống Kê</a></li>
@@ -76,7 +76,7 @@ $username = $_SESSION["username"] ?? "User";
   <div id="mobileMenu" class="mobile-menu md:hidden mt-3 bg-white/10 rounded-xl overflow-hidden">
 
     <ul class="flex flex-col p-4 gap-3 text-white font-medium">
-      <li><a href="dashboard.php" class="flex items-center gap-2"><i class="fas fa-home"></i> Trang Chủ</a></li>
+      <li><a href="dashboard.php" class="flex items-center gap-2"><i class="fas fa-home"></i> Thói Quen</a></li>
       <li><a href="journal.php" class="flex items-center gap-2"><i class="fas fa-book"></i> Nhật Ký</a></li>
       <li><a href="community.php" class="flex items-center gap-2"><i class="fas fa-users"></i> Cộng Đồng</a></li>
       <li><a href="thongke.php" class="flex items-center gap-2"><i class="fas fa-chart-bar"></i> Thống Kê</a></li>

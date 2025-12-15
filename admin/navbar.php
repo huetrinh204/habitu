@@ -43,8 +43,8 @@
 
             <li class="flex items-center gap-1">
                 <i class="fas fa-cog"></i>
-                <a href="settings.php" class="hover:text-yellow-300 transition">Cài Đặt</a>
-            </li>
+                <a href="feedbacks.php" class="hover:text-yellow-300 transition">Phản Hồi</a>
+            </li> 
         </ul>
 
         <!-- Right: ADMIN + MOBILE BUTTON -->
@@ -84,7 +84,7 @@
         <li><a href="users.php">Người Dùng</a></li>
         <li><a href="post.php">Bài Viết</a></li>
         <li><a href="habits.php">Thói Quen</a></li>
-        <li><a href="settings.php">Cài Đặt</a></li>
+      <li><a href="feedbacks.php">Phản Hồi</a></li> 
     </ul>
 
 </nav>

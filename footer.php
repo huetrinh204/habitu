@@ -38,8 +38,8 @@
       <h3 class="text-lg font-semibold mb-3">Tài Nguyên</h3>
       <ul class="space-y-2 text-sm">
         <li><a href="index.php" class="hover:text-yellow-300">Hướng Dẫn Sử Dụng</a></li>
-        <li><a href="#" class="hover:text-yellow-300">Blog</a></li>
-        <li><a href="#" class="hover:text-yellow-300">Câu Hỏi Thường Gặp</a></li>
+        <li><a href="community.php" class="hover:text-yellow-300">Blog</a></li>
+        <li><a href="support.php" class="hover:text-yellow-300">Câu Hỏi Thường Gặp</a></li>
         <li><a href="support.php" class="hover:text-yellow-300">Hỗ Trợ</a></li>
       </ul>
     </div>
