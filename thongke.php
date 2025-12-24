@@ -205,6 +205,7 @@ for ($i = 6; $i >= 0; $i--) {
 
   </div>
 </section>
+ <?php include "footer.php"; ?>
 <script>
 new Chart(barChart, {
   type: "bar",
